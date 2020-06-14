@@ -33,7 +33,11 @@ const requestHandler=((req,res)=>{
             res.setHeader('Location', '/users');
             return res.end();  
         })
-        
+        //res.statusCode = 302;
+        //res.setHeader('Location','/users');
+        //res.end() ; or return res.end(); 
+        // 이게 해당 코드에서 가능한 이유는 현재 콜백 함수에서 실행되는 내용이, res에 영향을 미치지 않기 때문이다.
+        //만약 res에 영향을 미치면 무조건 콜백함수 내부에 들어가있어야 하지만 그게 아니라면 외부에 선언해도 상관없다.
     }
 });
 
