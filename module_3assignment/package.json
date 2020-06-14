@@ -1,12 +1,16 @@
 {
   "name": "module_3assignment",
   "version": "1.0.0",
-  "description": "",
+  "description": "hi!",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "start-server":"node app.js"     
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/username/repository.git"
   },
   "author": "moonee kim",
   "license": "ISC"
