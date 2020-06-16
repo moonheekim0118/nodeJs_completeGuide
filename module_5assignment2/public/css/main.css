@@ -1,0 +1,34 @@
+
+body{
+    margin:0;
+    padding:0;
+}
+
+.main-header{
+    width: 100%;
+    height:56px;
+    background-color:indianred;
+}
+.main-header__nav{
+    height:100%;
+    display: flex;
+    align-items: center;
+}
+.main-header__itemlist{
+    list-style-type: none;
+    margin: 0;
+    padding:0;
+    display: flex;
+}
+.main-header__item{
+    margin:0 1rem;
+    padding:0;
+}
+.main-header__item a{
+   text-decoration: none;
+   color: white;
+}
+.main-header__item a:hover,
+.main-header__item a:active{
+    color: lightgreen;
+}
