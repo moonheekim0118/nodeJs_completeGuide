@@ -1,28 +1,21 @@
+const path =require('path');
+
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use('/',(req,res,next)=>{
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-    console.log('first middleware');
-    next(); //next 혹은 response를 해야함. next는 다음 미들웨어로 넘긴다는 뜻 
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use('/admin',adminRoutes); // '/admin' 으로시작하는 path만 보내진다.
+app.use(shopRoutes);
+
+app.use((req,res,next)=>{
+    res.status(404).sendFile(path.join(__dirname, 'views', '404error.html'));
 });
-
-app.use('/add-product',(req,res,next)=>{
-
-    console.log('second middleware');
-    res.send('<h1>this is add product page! </h1>');
-
-});
-
-app.use('/',(req,res,next)=>{
-
-    console.log('third middleware');
-    res.send('<h1>hello welcome! </h1>');
-
-});
-
-
 
 
 app.listen(3000);
