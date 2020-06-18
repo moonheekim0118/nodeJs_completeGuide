@@ -5,7 +5,8 @@ const rootDir = require('../util/path');
 const products = [];
 
 router.get('/add-product',(req,res,next)=>{
-    res.sendFile(path.join(rootDir,'views','admin.html')); //파일보내기 
+    //res.sendFile(path.join(rootDir,'views','admin.html')); //파일보내기 
+    res.render('admin');
 });
 
 router.post('/add-product',(req,res,next)=>{
