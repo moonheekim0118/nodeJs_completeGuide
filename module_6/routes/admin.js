@@ -6,7 +6,7 @@ const products = [];
 
 router.get('/add-product',(req,res,next)=>{
     //res.sendFile(path.join(rootDir,'views','admin.html')); //파일보내기 
-    res.render('admin');
+    res.render('admin',{pageTitle:'Add Product :)', path:'/admin/add-product'}); 
 });
 
 router.post('/add-product',(req,res,next)=>{

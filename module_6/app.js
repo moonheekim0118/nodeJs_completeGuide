@@ -16,9 +16,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin',adminData.routes);
 app.use(shopRouter);
-app.use('/',(req,res,next)=>{
+
+app.use((req,res,next)=>{
    // res.sendFile(path.join(__dirname,'views','404.html'));
-   res.render('404.pug');
+   res.status(404).render('404.pug',{pageTitle:"404 error"});
 });
 app.listen(3000);
 
