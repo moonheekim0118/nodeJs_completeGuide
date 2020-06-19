@@ -6,7 +6,13 @@ const products = [];
 
 router.get('/add-product',(req,res,next)=>{
     //res.sendFile(path.join(rootDir,'views','admin.html')); //파일보내기 
-    res.render('admin',{pageTitle:'Add Product :)', path:'/admin/add-product'}); 
+    res.render('admin',{
+        pageTitle:'Add Product :)', 
+        path:'/admin/add-product',
+        activeAddProduct:true, // 현재 route가 Add-Product라고 알려준다. 
+        productCSS:true, //link 할 CSS 파일 지정을 위해 
+        formCSS:true
+    }); 
 });
 
 router.post('/add-product',(req,res,next)=>{
