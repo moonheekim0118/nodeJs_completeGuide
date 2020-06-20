@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    padding :0;
+    margin : 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.main-header{
+    height: 100%;
+    display: flex;
+    background-color: teal;
+    align-items: center;
+}
+
+.main-header__itemlist{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.main-header__item{
+    margin: 0 1rem;
+    padding: 0;
+}
+
+.main-header__item a{
+    text-decoration: none;
+    color: ghostwhite;
+}
+
+.main-header__item a:hover,
+.main-header__item a:active,
+.main-header__item a.active{
+    color: gold;
+}

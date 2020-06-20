@@ -1,0 +1,14 @@
+<%- include('includes/head.ejs')%>
+<link rel="stylesheet" href="/css/form.css">
+</head>
+<%- include('includes/navigation.ejs')%>
+<body>
+    <main>
+            <h1> enter the user name! </h1>
+            <form class="form-control" action="/users" method="POST">
+                <input type="text" name="user_name" id="user_name">
+                <button class="button-control" type="submit">REGISTER</button>
+            </form>
+            
+    </main>
+<%- include('includes/end.ejs')%>
