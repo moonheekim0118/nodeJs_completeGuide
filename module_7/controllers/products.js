@@ -14,10 +14,12 @@ exports.postAddProduct=(req,res,next)=>{
 };
 
 exports.getProducts=(req,res,next)=>{
-    const products = Product.fetchAll(); //products array 가져오기 
-    res.render('shop',{
-        pageTitle:'shop',
-        prods:products,
-        path:'/'
-    });
+    Product.fetchAll((products)=>{ //이 익명의 콜백함수를 fetchAll에 인자로 넣음, 해당 콜백함수가 실행되면 array가 products자리에 인자로 들어옴.
+        res.render('shop',{ 
+            pageTitle:'shop',
+            prods:products,
+            path:'/'
+        });
+    }); //products array 가져오기 
+
 };
