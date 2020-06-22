@@ -11,7 +11,11 @@ exports.getAddProduct=(req,res,next)=>{ //상품 추가
 
 // /adimin/add-product ==> POST 
 exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list 
-    const product = new Product(req.body.title); //인스턴스 생성, req.body.title(책이름) 생성자 
+    const title=req.body.title;
+    const imageUrl=req.body.imageUrl;
+    const price=req.body.price;
+    const description=req.body.description;
+    const product = new Product(title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
     product.save(); // products array에 push 
     res.redirect('/products'); //리다이렉트 
 };
