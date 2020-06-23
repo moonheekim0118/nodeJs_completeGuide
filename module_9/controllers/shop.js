@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getIndex=(req,res,next)=>{
     Product.fetchAll((products)=>{ 
@@ -46,7 +47,9 @@ exports.getProduct=(req,res,next)=>{
 
 exports.postCart=(req,res,next)=>{
     const prodId= req.body.productId;
-    console.log(prodId);
+    Product.findById(prodId,product =>{  //먼저 req로 받은 id에 해당하는 product를 찾아준다.
+        Cart.addProduct(prodId, product.price);
+    });
     res.redirect('/cart');
 }
 
