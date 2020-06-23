@@ -23,11 +23,10 @@ exports.getProducts=(req,res,next)=>{
 exports.getProduct=(req,res,next)=>{
     const prodId = req.params.productId;
     Product.findById(prodId, product=>{
-        console.log(product);
         res.render('shop/product-detail', {
-            productInfo: product,
+            product: product,
             path:'/products',
-            pageTitle:'product detail'
+            pageTitle:product.title
         })
     })
     /* Product.fetchAll((products)=>{ 
@@ -43,6 +42,12 @@ exports.getProduct=(req,res,next)=>{
         }
     }); */
     
+}
+
+exports.postCart=(req,res,next)=>{
+    const prodId= req.body.productId;
+    console.log(prodId);
+    res.redirect('/cart');
 }
 
 exports.getCart=(req,res,next)=>{

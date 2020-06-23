@@ -9,6 +9,8 @@ route.get('/products',shopController.getProducts);
 
 route.get('/cart',shopController.getCart);
 
+route.post('/cart',shopController.postCart);
+
 route.get('/products/:productId',shopController.getProduct);
 
 route.get('/checkout',shopController.getCheckout);
