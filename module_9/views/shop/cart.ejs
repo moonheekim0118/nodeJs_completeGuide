@@ -9,11 +9,15 @@
                     <% cart.forEach(item => { %>
                         <li>
                             <p><%=item.productData.title%> (<%=item.qty%>)  [ price $ <%=item.productData.price%> ]</p>
-                            <form action="/cart-delete-item" method="POST">
+                            <form action="/cart-edit-item" method="POST">
                                 <input type="number" name="qty" value="<%=item.qty%>" id="qty">
                                 <input type="hidden" value="<%= item.productData.id %>" name="productId" >
+                                <button class="btn" type="submit">EDIT</button>
+                            </form><!--수량 수정-->
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" value="<%= item.productData.id %>" name="productId" >
                                 <button class="btn" type="submit">DELETE</button>
-                            </form>
+                            </form> <!--삭제-->
                         </li>
                     <%  }) %>
                 </ul>

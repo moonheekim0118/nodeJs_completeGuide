@@ -15,24 +15,40 @@ module.exports = class Cart{
         })
     }
 
-    static deleteProduct(id, price, removedQty){ //카트에서 상품 지우는 메서드 , 상품도 지우고 total price도 수정해야함.
+    static deleteProduct(id, price){ //카트에서 상품 지우는 메서드 , 상품도 지우고 total price도 수정해야함.
         fs.readFile(p,(err,fileContent)=>{
             if(err) return;
             let cart =JSON.parse(fileContent);
             const updatedCart = {...cart};
-            console.log(removedQty);
-            if(removedQty == null || removedQty ===0 ) { // 전체 지우기일 때 
-                const product= updatedCart.products.find(prod => prod.id === id);
-                if(!product) return;
-                removedQty=product.qty;
-                updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
-                updatedCart.totalPrice = updatedCart.totalPrice- (price* removedQty);
+            const product= updatedCart.products.find(prod => prod.id === id);
+            if(!product) return;
+            updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
+            updatedCart.totalPrice = updatedCart.totalPrice- (price* product.qty);
+            fs.writeFile(p, JSON.stringify(updatedCart),(err)=>{
+                console.log(err);
+            });
+        });
+    }
+
+    static editProduct(id, price, qty){ 
+        fs.readFile(p,(err,fileContent)=>{
+            if(err) return;
+            let cart =JSON.parse(fileContent); //파일 파싱하기 
+            const updatedCart = {...cart}; // 파일내용 복제 
+
+            const productIndex = updatedCart.products.findIndex(prod=> prod.id ===id); //수정할 product index찾기 
+            if(updatedCart.products[productIndex].qty < qty){ // 추가하는 경우 
+                const AddNum= qty - updatedCart.products[productIndex].qty ;
+                updatedCart.products[productIndex].qty=qty;
+                updatedCart.totalPrice= updatedCart.totalPrice +  (price* AddNum);
             }
-            else{ // 수량만 바꾸기 일 때 인덱스 찾아서 qty 바꿔주기.
-                const productIndex = updatedCart.products.findIndex(prod=> prod.id ===id);
-                const RemoveNum = updatedCart.products[productIndex].qty - removedQty;
-                updatedCart.products[productIndex].qty=removedQty;
-                updatedCart.totalPrice = updatedCart.totalPrice- (price* RemoveNum);
+            else if (updatedCart.products[productIndex].qty === qty){ // 같은경우 
+                return;
+            }
+            else{ //삭제하는 경우 
+                const RemoveNum = updatedCart.products[productIndex].qty - qty; 
+                updatedCart.products[productIndex].qty=qty; //qty 수정 
+                updatedCart.totalPrice = updatedCart.totalPrice- (price* RemoveNum); // total price 수정 
             }
             fs.writeFile(p, JSON.stringify(updatedCart),(err)=>{
                 console.log(err);

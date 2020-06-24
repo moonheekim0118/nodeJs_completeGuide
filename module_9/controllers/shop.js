@@ -82,14 +82,21 @@ exports.getOrders=(req,res,next)=>
     });
 }
 
-exports.postDeleteCart=(req,res,next)=>{
-
+exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅 
     const productId=req.body.productId;
     Product.findById(productId, product=>{
-        const qty = req.body.qty;
-        Cart.deleteProduct(productId, product.price, qty);
+        Cart.deleteProduct(productId, product.price);
         res.redirect('/cart');
     });
-    // item에 해당하는 가격을 받아온다.
-    // 가격 * qty를 total price에서 깎는다.
+}
+
+
+exports.postEditCart=(req,res,next)=> // 수량수정 라우팅 
+{
+    const productId=req.body.productId;
+    const qty = req.body.qty; //수정될 수량 파라미터 
+    Product.findById(productId, product=>{
+        Cart.editProduct(productId,product.price,qty);
+        res.redirect('/cart');
+    });
 }
