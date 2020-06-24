@@ -6,8 +6,31 @@ const rootDir = require('../util/path');
 const p = path.join(rootDir,'data','cart.json');
 
 module.exports = class Cart{
-    
-    
+
+    static getCart(cb){
+        fs.readFile(p,(err,fileContent)=>{
+            if(err) {return cb(null);}
+            const cart = JSON.parse(fileContent);
+            cb(cart);
+        })
+    }
+
+    static deleteProduct(id, price){ //카트에서 상품 지우는 메서드 , 상품도 지우고 total price도 수정해야함.
+        fs.readFile(p,(err,fileContent)=>{
+            if(err) return;
+            let cart =JSON.parse(fileContent);
+            const updatedCart = {...cart};
+            const product= updatedCart.products.find(prod => prod.id === id);
+            const productQty=product.qty;
+            updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
+            updatedCart.totalPrice = updatedCart.totalPrice- (price* productQty);
+            fs.writeFile(p, JSON.stringify(updatedCart),(err)=>{
+                console.log(err);
+            });
+        });
+    }
+
+
     static addProduct(id, productPrice){
         // 이전 cart를 불러온다.
         fs.readFile(p,(err,fileContent)=>{
@@ -21,7 +44,7 @@ module.exports = class Cart{
             let updatedProduct;
             if(exisitingProduct){ //있다면 수량을 늘려준다.
                 updatedProduct =  {...exisitingProduct}; 
-                updatedProduct.qty=updatedProduct.qyt+1;
+                updatedProduct.qty=updatedProduct.qty+1;
                 cart.products = [...cart.products];
                 cart.products[exisitingProductIndex]=updatedProduct;
                 
@@ -36,6 +59,4 @@ module.exports = class Cart{
         })
         
     }
-
-    
 }

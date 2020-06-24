@@ -65,3 +65,12 @@ exports.getProducts=(req,res,next)=>{
     }); 
 };
 
+// 삭제 메서드 
+exports.postDeleteProduct=(req,res,next)=>{
+    // hidden 으로 id 를 받아온다.
+    // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
+    const id = req.body.productId;
+    Product.delete(id);
+    res.redirect('/admin/products');
+
+}

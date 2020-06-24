@@ -53,12 +53,27 @@ exports.postCart=(req,res,next)=>{
     res.redirect('/cart');
 }
 
-exports.getCart=(req,res,next)=>{
-    res.render('shop/cart', {
-        pageTitle: 'my Cart',
-        path : '/cart'
+exports.getCart=(req,res,next)=>{ //cart에 담겨진 정보 보내기 
+    Cart.getCart(cart=>{ //모든 cart에 있는 product 가져오기 
+        Product.fetchAll(products=>{ //모든 product정보 가져오기 
+            const cartProduct=[]; //cart에있는 product 정보 담을 배열 
+            for(prod of products){ 
+                const cartProductData= cart.products.find(p => p.id === prod.id);
+                //만약 cart에서 product를 찾았다면 
+                if(cartProductData){
+                    // cartProduct에 해당 product와 qty를 넣어준다. 
+                    cartProduct.push({productData: prod, qty: cartProductData.qty});
+                }
+            }
+            res.render('shop/cart', {
+                path:'/cart',
+                pageTitle:'my Cart',
+                cart: cartProduct,
+                totalPrice: cart.totalPrice
+            });
+        });
     });
-}
+};
 
 exports.getCheckout=(req,res,next)=>{
     res.render('shop/checkout',{
@@ -73,4 +88,9 @@ exports.getOrders=(req,res,next)=>
         pageTitle:'Order',
         path:'/orders'
     });
+}
+
+exports.postDeleteCart=(req,res,next)=>{
+
+
 }

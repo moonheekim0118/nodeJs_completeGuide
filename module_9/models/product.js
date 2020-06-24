@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const rootDir = require('../util/path');
 const p = path.join(rootDir,'data','products.json');
+const Cart = require('./cart');
 
 const getProductfromFile = cb =>{
     fs.readFile(p,(err,fileContent)=>{
@@ -23,6 +24,7 @@ module.exports= class Product{
         this.price=price;
     }
 
+    
     save(){
        getProductfromFile(products=>{
 
@@ -56,5 +58,22 @@ module.exports= class Product{
             // p.id === id 가 true이면 현재 보고있는 p (products 중에 하나) 를 return 하여 product 변수에 저장 
             cb(product);
         })
+    }
+    
+    static delete(id){
+        getProductfromFile(products=>{
+            //const productIndex = products.findIndex(p => p.id===id);
+            //if(productIndex){
+            //    products.splice(productIndex, 1);
+           // }
+           const product= products.find(p => p.id===id);
+           const productPrice = product.price;
+           const updatedProduct = products.filter(p=> p.id!==id);
+            fs.writeFile(p, JSON.stringify(updatedProduct), (err)=>{ //다시 파일에 저장 
+                if(!err){ // error 가 없다면 cart에서도 지워줘야한다.
+                    Cart.deleteProduct(id,productPrice);
+                }
+            });
+        });
     }
 }
