@@ -15,15 +15,23 @@ module.exports = class Cart{
         })
     }
 
-    static deleteProduct(id, price){ //카트에서 상품 지우는 메서드 , 상품도 지우고 total price도 수정해야함.
+    static deleteProduct(id, price, removedQty){ //카트에서 상품 지우는 메서드 , 상품도 지우고 total price도 수정해야함.
         fs.readFile(p,(err,fileContent)=>{
             if(err) return;
             let cart =JSON.parse(fileContent);
             const updatedCart = {...cart};
             const product= updatedCart.products.find(prod => prod.id === id);
-            const productQty=product.qty;
-            updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
-            updatedCart.totalPrice = updatedCart.totalPrice- (price* productQty);
+            if(removedQty === null || removedQty === 0) { // 전체 지우기일 때 
+                removedQty=product.qty;
+                updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
+                updatedCart.totalPrice = updatedCart.totalPrice- (price* removedQty);
+            }
+            else{ // 수량만 바꾸기 일 때 인덱스 찾아서 qty 바꿔주기.
+                const productIndex = updatedCart.products.findIndex(prod=> prod.id ===id);
+                const RemoveNum = updatedCart.products[productIndex].qty - removedQty;
+                updatedCart.products[productIndex].qty=removedQty;
+                updatedCart.totalPrice = updatedCart.totalPrice- (price* RemoveNum);
+            }
             fs.writeFile(p, JSON.stringify(updatedCart),(err)=>{
                 console.log(err);
             });

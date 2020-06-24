@@ -71,7 +71,7 @@ module.exports= class Product{
            const updatedProduct = products.filter(p=> p.id!==id);
             fs.writeFile(p, JSON.stringify(updatedProduct), (err)=>{ //다시 파일에 저장 
                 if(!err){ // error 가 없다면 cart에서도 지워줘야한다.
-                    Cart.deleteProduct(id,productPrice);
+                    Cart.deleteProduct(id,productPrice,null);
                 }
             });
         });

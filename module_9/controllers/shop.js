@@ -30,18 +30,6 @@ exports.getProduct=(req,res,next)=>{
             pageTitle:product.title
         })
     })
-    /* Product.fetchAll((products)=>{ 
-        
-        for(let prods of products){
-            if(prods.id === prodId){
-                res.render('shop/product-detail',{ 
-                    pageTitle:'Product detail',
-                    productInfo: prods,
-                    path:'/products'
-                });
-            }
-        }
-    }); */
     
 }
 
@@ -92,5 +80,13 @@ exports.getOrders=(req,res,next)=>
 
 exports.postDeleteCart=(req,res,next)=>{
 
-
+    Product.fetchAll(product=>{
+        const productId=req.body.productId;
+        const qty = req.body.qty;
+        const item = product.find(p=> p.id === productId);
+        if(item){ Cart.deleteProduct(productId, item.price, qty);}
+        res.redirect('/cart');
+    });
+    // item에 해당하는 가격을 받아온다.
+    // 가격 * qty를 total price에서 깎는다.
 }
