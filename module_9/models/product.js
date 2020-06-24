@@ -15,7 +15,8 @@ const getProductfromFile = cb =>{
 }
 
 module.exports= class Product{
-    constructor(title, imageUrl, description, price){
+    constructor(id, title, imageUrl, description, price){
+        this.id= id;
         this.title=title;
         this.imageUrl=imageUrl;
         this.description=description;
@@ -23,13 +24,23 @@ module.exports= class Product{
     }
 
     save(){
-        this.id = Math.random().toString();
        getProductfromFile(products=>{
-        products.push(this); // array에 넣기 
-        // js -> json 파싱 (stringfiy)
-        fs.writeFile(p, JSON.stringify(products), (err)=>{ //다시 파일에 저장 
-            console.log(err); //arrowfunction을 통해서 err check
-        });
+
+        if(this.id){ //editMode 
+            const exisitingProductIndex = products.findIndex(prod => prod.id===this.id); // this.id에 해당하는 product 인덱스 찾기
+            const updatedProducts =[...products];
+            updatedProducts[exisitingProductIndex]=this; // update해주기!
+            fs.writeFile(p, JSON.stringify(updatedProducts), (err)=>{ // updated를 다시 파일에 저장 
+                console.log(err);
+            });
+        } else{ // 새로 추가하는 것 
+            this.id = Math.random().toString();
+            products.push(this); // array에 넣기 
+            // js -> json 파싱 (stringfiy)
+            fs.writeFile(p, JSON.stringify(products), (err)=>{ //다시 파일에 저장 
+                console.log(err); 
+            });
+    }
        });
     }
     

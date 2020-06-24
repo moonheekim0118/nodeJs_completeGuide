@@ -3,9 +3,10 @@ const Product = require('../models/product');
 
 // /admin/add-product == > GET
 exports.getAddProduct=(req,res,next)=>{ //상품 추가 
-    res.render('admin/add-product', {
+    res.render('admin/edit-product', {
         pageTitle:'Add Product',
-        path:'/admin/add-prdouct' 
+        path:'/admin/add-prdouct' ,
+        editing:false
     });
 };
 
@@ -15,18 +16,43 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product = new Product(title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
+    const product = new Product(null,title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
     product.save(); // products array에 push 
     res.redirect('/products'); //리다이렉트 
 };
 
 // /admin/edit-product 
 exports.getEditProducts=(req,res,next)=>{
-    res.render('admin/edit-product', {
-        pageTitle:'edit product',
-        path:'/admin/edit-product'
-    });    
+    const editMode= req.query.edit;
+    if(!editMode){
+        return res.redirect('/');
+    }
+    const prodId=req.params.productId;
+    Product.findById(prodId, product=>{
+        if(!product){
+            return res.redirect('/');
+        }
+        res.render('admin/edit-product', {
+            pageTitle:'Edit product',
+            path:'/admin/edit-product',
+            editing:editMode,
+            product:product
+        });    
+    });
+
 };
+
+exports.postEditProduct=(req,res,next)=>{
+    // updated 
+    const id = req.body.productId;
+    const title=req.body.title;
+    const imageUrl=req.body.imageUrl;
+    const price=req.body.price;
+    const description=req.body.description;
+    const updatedproduct = new Product(id,title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
+    updatedproduct.save(); // products array에 push 
+    res.redirect('/admin/products'); //리다이렉트 
+}
 
 // /admin/products
 exports.getProducts=(req,res,next)=>{
