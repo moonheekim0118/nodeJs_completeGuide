@@ -45,6 +45,8 @@ exports.getCart=(req,res,next)=>{ //cart에 담겨진 정보 보내기
     Cart.getCart(cart=>{ //모든 cart에 있는 product 가져오기 
         Product.fetchAll(products=>{ //모든 product정보 가져오기 
             const cartProduct=[]; //cart에있는 product 정보 담을 배열 
+            let totalPrice=0;
+           if(cart){
             for(prod of products){ 
                 const cartProductData= cart.products.find(p => p.id === prod.id);
                 //만약 cart에서 product를 찾았다면 
@@ -53,11 +55,13 @@ exports.getCart=(req,res,next)=>{ //cart에 담겨진 정보 보내기
                     cartProduct.push({productData: prod, qty: cartProductData.qty});
                 }
             }
+            totalPrice=cart.totalPrice;
+           }
             res.render('shop/cart', {
                 path:'/cart',
                 pageTitle:'my Cart',
                 cart: cartProduct,
-                totalPrice: cart.totalPrice
+                totalPrice: totalPrice
             });
         });
     });
@@ -80,11 +84,10 @@ exports.getOrders=(req,res,next)=>
 
 exports.postDeleteCart=(req,res,next)=>{
 
-    Product.fetchAll(product=>{
-        const productId=req.body.productId;
+    const productId=req.body.productId;
+    Product.findById(productId, product=>{
         const qty = req.body.qty;
-        const item = product.find(p=> p.id === productId);
-        if(item){ Cart.deleteProduct(productId, item.price, qty);}
+        Cart.deleteProduct(productId, product.price, qty);
         res.redirect('/cart');
     });
     // item에 해당하는 가격을 받아온다.

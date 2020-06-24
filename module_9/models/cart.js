@@ -20,8 +20,10 @@ module.exports = class Cart{
             if(err) return;
             let cart =JSON.parse(fileContent);
             const updatedCart = {...cart};
-            const product= updatedCart.products.find(prod => prod.id === id);
-            if(removedQty === null || removedQty === 0) { // 전체 지우기일 때 
+            console.log(removedQty);
+            if(removedQty == null || removedQty ===0 ) { // 전체 지우기일 때 
+                const product= updatedCart.products.find(prod => prod.id === id);
+                if(!product) return;
                 removedQty=product.qty;
                 updatedCart.products = updatedCart.products.filter(prod=> prod.id !== id);
                 updatedCart.totalPrice = updatedCart.totalPrice- (price* removedQty);
