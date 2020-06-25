@@ -2,34 +2,41 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getIndex=(req,res,next)=>{
-    Product.fetchAll((products)=>{ 
+    Product.fetchAll()
+    .then(([rows, fieldData])=>{
         res.render('shop/index',{ 
             pageTitle:'Shop',
-            prods:products,
+            prods:rows,
             path:'/'
         });
-    }); //products array 가져오기 
+    })
+    .catch(err=> console.log(err)); //products array 가져오기 
 }
 
 exports.getProducts=(req,res,next)=>{
-    Product.fetchAll((products)=>{ 
+    Product.fetchAll()
+    .then(([rows,fieldData])=>{
         res.render('shop/product-list',{ 
             pageTitle:'ALL PRODUCTS',
-            prods:products,
+            prods:rows,
             path:'/products'
         });
-    }); 
+    })
+    .catch(err=>console.log(err)); 
 };
 
 exports.getProduct=(req,res,next)=>{
     const prodId = req.params.productId;
-    Product.findById(prodId, product=>{
+    Product.findById(prodId)
+    .then (([product]) => 
+    {
         res.render('shop/product-detail', {
-            product: product,
+            product: product[0],
             path:'/products',
             pageTitle:product.title
         })
     })
+    .catch(err => console.log(err));
     
 }
 

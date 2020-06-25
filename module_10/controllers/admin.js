@@ -17,8 +17,9 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const price=req.body.price;
     const description=req.body.description;
     const product = new Product(null,title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
-    product.save(); // products array에 push 
-    res.redirect('/products'); //리다이렉트 
+    product.save()
+    .then(()=>{  res.redirect('/products');} )
+    .catch(err =>{console.log(err)});
 };
 
 // /admin/edit-product 
@@ -56,13 +57,15 @@ exports.postEditProduct=(req,res,next)=>{
 
 // /admin/products
 exports.getProducts=(req,res,next)=>{
-    Product.fetchAll((products)=>{ 
+    Product.fetchAll()
+    .then(([rows,fieldData])=>{
         res.render('admin/products',{ 
             pageTitle:'Admin products',
-            prods:products,
+            prods:rows,
             path:'/admin/products'
         });
-    }); 
+    })
+    .catch(err=>console.log(err)); 
 };
 
 // 삭제 메서드 

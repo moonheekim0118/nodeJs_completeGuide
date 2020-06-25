@@ -7,13 +7,7 @@ const adminRoute = require('./routes/admin.js');
 const shopRoute = require('./routes/shop.js');
 const errorsController = require('./controllers/errors');
 const bodyParser = require('body-parser');
-db.execute('SELECT * FROM products')
-.then(result=>{
-    console.log(result[0], result[1]);
-})
-.catch(err=>{
-    console.log(err);    
-});
+
 app.set('view engine', 'ejs');
 app.set('views','views');
 
