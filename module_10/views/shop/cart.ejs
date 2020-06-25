@@ -1,0 +1,29 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (cart.length > 0) { %>
+                <ul>
+                    <% cart.forEach(item => { %>
+                        <li>
+                            <p><%=item.productData.title%> (<%=item.qty%>)  [ price $ <%=item.productData.price%> ]</p>
+                            <form action="/cart-edit-item" method="POST">
+                                <input type="number" name="qty" value="<%=item.qty%>" id="qty">
+                                <input type="hidden" value="<%= item.productData.id %>" name="productId" >
+                                <button class="btn" type="submit">EDIT</button>
+                            </form><!--수량 수정-->
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" value="<%= item.productData.id %>" name="productId" >
+                                <button class="btn" type="submit">DELETE</button>
+                            </form> <!--삭제-->
+                        </li>
+                    <%  }) %>
+                </ul>
+                <p>total price  :  $ <%=totalPrice%></p>
+            <% } else {%>
+                <h1>there's nothing in cart yet!</h1>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>
