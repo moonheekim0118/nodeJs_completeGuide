@@ -16,10 +16,17 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product = new Product(null,title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
-    product.save()
-    .then(()=>{  res.redirect('/products');} )
-    .catch(err =>{console.log(err)});
+    Product.create({
+        title: title,
+        price: price,
+        imageUrl : imageUrl,
+        description : description 
+    })
+    .then(result => {
+        console.log(result);
+        res.redirect('/');
+    })
+    .catch(err => console.log(err));
 };
 
 // /admin/edit-product 
@@ -29,18 +36,17 @@ exports.getEditProducts=(req,res,next)=>{
         return res.redirect('/');
     }
     const prodId=req.params.productId;
-    Product.findById(prodId, product=>{
-        if(!product){
-            return res.redirect('/');
-        }
+    Product.findByPk(prodId)
+    .then(product=>{
+        if(!product) return res.redirect('/');
         res.render('admin/edit-product', {
             pageTitle:'Edit product',
             path:'/admin/edit-product',
             editing:editMode,
             product:product
         });    
-    });
-
+    })
+    .catch(err=>{console.log(err)});
 };
 
 exports.postEditProduct=(req,res,next)=>{
@@ -53,19 +59,31 @@ exports.postEditProduct=(req,res,next)=>{
     const updatedproduct = new Product(id,title,imageUrl,description,price); //인스턴스 생성, req.body.title(책이름) 생성자 
     updatedproduct.save(); // products array에 push 
     res.redirect('/admin/products'); //리다이렉트 
+    let changeValue ={
+        title:title,
+        price:price,
+        imageUrl:imageUrl,
+        description:description
+    };
+    Product.update(changeValue, {where: {id : id}} )
+    .then(result => {
+        console.log(result);
+        res.redirect('/');
+    })
+    .catch(err => console.log(err));
 }
 
 // /admin/products
 exports.getProducts=(req,res,next)=>{
-    Product.fetchAll()
-    .then(([rows,fieldData])=>{
+    Product.findAll()
+    .then(products =>{
         res.render('admin/products',{ 
             pageTitle:'Admin products',
-            prods:rows,
+            prods:products,
             path:'/admin/products'
         });
     })
-    .catch(err=>console.log(err)); 
+    .catch(err => console.log(err));
 };
 
 // 삭제 메서드 
@@ -73,7 +91,12 @@ exports.postDeleteProduct=(req,res,next)=>{
     // hidden 으로 id 를 받아온다.
     // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
     const id = req.body.productId;
-    Product.delete(id);
-    res.redirect('/admin/products');
-
+    Product.destroy({where:{id:id}})
+    .then( result => {
+        console.log(result);
+        res.redirect('/admin/products');
+    })
+    .catch(err=>{
+        console.log.err;
+    });
 }

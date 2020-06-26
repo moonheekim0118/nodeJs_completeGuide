@@ -2,42 +2,50 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getIndex=(req,res,next)=>{
-    Product.fetchAll()
-    .then(([rows, fieldData])=>{
+    Product.findAll()
+    .then(products => {
         res.render('shop/index',{ 
             pageTitle:'Shop',
-            prods:rows,
+            prods:products,
             path:'/'
         });
     })
-    .catch(err=> console.log(err)); //products array 가져오기 
+    .catch( err => {console.log(err)});
 }
 
 exports.getProducts=(req,res,next)=>{
-    Product.fetchAll()
-    .then(([rows,fieldData])=>{
+    Product.findAll()
+    .then(products => {
         res.render('shop/product-list',{ 
             pageTitle:'ALL PRODUCTS',
-            prods:rows,
+            prods:products,
             path:'/products'
         });
     })
-    .catch(err=>console.log(err)); 
+    .catch( err => {console.log(err)});
 };
 
 exports.getProduct=(req,res,next)=>{
     const prodId = req.params.productId;
-    Product.findById(prodId)
-    .then (([product]) => 
-    {
+    /*Product.findAll({where: {id : prodId}})
+    .then(products => {
         res.render('shop/product-detail', {
-            product: product[0],
+            product: products[0],
             path:'/products',
-            pageTitle:product.title
-        })
+            pageTitle:products[0].title
+        });
     })
-    .catch(err => console.log(err));
-    
+    .catch(err => console.log(err));*/
+    Product.findByPk(prodId)
+    .then( (products)=>{
+        res.render('shop/product-detail', {
+            product: products,
+            path:'/products',
+            pageTitle:products.title
+        });
+    })
+    .catch(err =>
+        console.log(err));
 }
 
 exports.postCart=(req,res,next)=>{
@@ -49,7 +57,7 @@ exports.postCart=(req,res,next)=>{
 }
 
 exports.getCart=(req,res,next)=>{ //cart에 담겨진 정보 보내기 
-    Cart.getCart(cart=>{ //모든 cart에 있는 product 가져오기 
+ /*   Cart.getCart(cart=>{ //모든 cart에 있는 product 가져오기 
         Product.fetchAll(products=>{ //모든 product정보 가져오기 
             const cartProduct=[]; //cart에있는 product 정보 담을 배열 
             let totalPrice=0;
@@ -71,7 +79,8 @@ exports.getCart=(req,res,next)=>{ //cart에 담겨진 정보 보내기
                 totalPrice: totalPrice
             });
         });
-    });
+    });*/
+    res.redirect('/');
 };
 
 exports.getCheckout=(req,res,next)=>{
