@@ -37,17 +37,17 @@ User.hasMany(Product);
 
 sequelize.sync() // passing {force:true} === override table 
 .then(result =>{
-    return User.findByPk(1);
+    return User.findByPk(1); // id === 1 유저가 있는지 
 })
 .then(user=>{
     if(!user){
-        return User.create({name:'Moonhee', email:'moonhee118118@gmail.com'});
+        return User.create({name:'Moonhee', email:'moonhee118118@gmail.com'}); //없다면 생성해주기 
     }
-    return Promise.resolve(user);
+    return Promise.resolve(user); 
 })
 .then(user=>{
     console.log(user);
-    app.listen(3000);
+    app.listen(3000); // 유저 생성 후 서버 만들기 
 })
 .catch(err=>{
     console.log(err);
