@@ -10,6 +10,9 @@ const bodyParser = require('body-parser');
 
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart= require('./models/cart');
+const CartItem= require('./models/cart-item');
+
 
 app.set('view engine', 'ejs');
 app.set('views','views');
@@ -35,19 +38,26 @@ app.use(errorsController.get404page);
 Product.belongsTo(User,{ constraints: true, onDelete:'CASCADE' }); // User Creates this product
 User.hasMany(Product);
 
-sequelize.sync() // passing {force:true} === override table 
+User.hasOne(Cart); // User has one Cart
+Cart.belongsTo(User); 
+
+Cart.belongsToMany(Product, {through: CartItem}); // CartItem에 Cart-Produc의 Many To Many가 저장됨 
+Product.belongsToMany(Cart, {through: CartItem});
+
+sequelize // passing {force:true} === override table 
+.sync()
 .then(result =>{
     return User.findByPk(1); // id === 1 유저가 있는지 
 })
 .then(user=>{
     if(!user){
-        return User.create({name:'Moonhee', email:'moonhee118118@gmail.com'}); //없다면 생성해주기 
+        User.create({name:'Moonhee', email:'moonhee118118@gmail.com'}); //없다면 생성해주기 
+        return  user.createCart(); //cart 생성
     }
     return Promise.resolve(user); 
 })
-.then(user=>{
-    console.log(user);
-    app.listen(3000); // 유저 생성 후 서버 만들기 
+.then(cart=>{
+    app.listen(3000); // 유저,카트 생성 후 서버 만들기
 })
 .catch(err=>{
     console.log(err);

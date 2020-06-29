@@ -4,24 +4,24 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
-            <% if (cart.length > 0) { %>
+            <% if (product.length > 0) { %>
                 <ul>
-                    <% cart.forEach(item => { %>
+                    <% product.forEach(p=> { %>
                         <li>
-                            <p><%=item.productData.title%> (<%=item.qty%>)  [ price $ <%=item.productData.price%> ]</p>
+                            <p><%=p.title%> (<%=p.cartItem.quantity%>)  [ price $ <%=p.price%> ]</p>
                             <form action="/cart-edit-item" method="POST">
-                                <input type="number" name="qty" value="<%=item.qty%>" id="qty">
-                                <input type="hidden" value="<%= item.productData.id %>" name="productId" >
+                                <input type="number" name="qty" value="<%=p.cartItem.quantity%>" id="qty">
+                                <input type="hidden" value="<%= p.id %>" name="productId" >
                                 <button class="btn" type="submit">EDIT</button>
                             </form><!--수량 수정-->
                             <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= item.productData.id %>" name="productId" >
+                                <input type="hidden" value="<%= p.id %>" name="productId" >
                                 <button class="btn" type="submit">DELETE</button>
                             </form> <!--삭제-->
                         </li>
                     <%  }) %>
                 </ul>
-                <p>total price  :  $ <%=totalPrice%></p>
+                <p>total price </p>
             <% } else {%>
                 <h1>there's nothing in cart yet!</h1>
             <% } %>
