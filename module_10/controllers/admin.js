@@ -53,7 +53,6 @@ exports.getEditProducts=(req,res,next)=>{
 };
 
 exports.postEditProduct=(req,res,next)=>{
-    // updated 
     const id = req.body.productId;
     const title=req.body.title;
     const imageUrl=req.body.imageUrl;
