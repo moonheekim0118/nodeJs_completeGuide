@@ -12,6 +12,8 @@ const Product = require('./models/product');
 const User = require('./models/user');
 const Cart= require('./models/cart');
 const CartItem= require('./models/cart-item');
+const Order= require('./models/order');
+const OrderItem=require('./models/order-item');
 
 
 app.set('view engine', 'ejs');
@@ -44,6 +46,12 @@ Cart.belongsTo(User);
 Cart.belongsToMany(Product, {through: CartItem}); // CartItem에 Cart-Produc의 Many To Many가 저장됨 
 Product.belongsToMany(Cart, {through: CartItem});
 
+Order.belongsTo(User);
+User.hasMany(Order); // one to many 
+
+Order.belongsToMany(Product,{through: OrderItem});
+Product.belongsToMany(Order, {through: OrderItem});
+
 sequelize // passing {force:true} === override table 
 .sync()
 .then(result =>{
@@ -51,12 +59,12 @@ sequelize // passing {force:true} === override table
 })
 .then(user=>{
     if(!user){
-        User.create({name:'Moonhee', email:'moonhee118118@gmail.com'}); //없다면 생성해주기 
-        return  user.createCart(); //cart 생성
+        return User.create({name:'Moonhee', email:'moonhee118118@gmail.com'}); //없다면 생성해주기   
     }
     return Promise.resolve(user); 
 })
 .then(cart=>{
+    cart.createCart(); //cart 생성
     app.listen(3000); // 유저,카트 생성 후 서버 만들기
 })
 .catch(err=>{

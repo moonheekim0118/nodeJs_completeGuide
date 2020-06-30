@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getIndex=(req,res,next)=>{
     Product.findAll()
@@ -111,12 +110,46 @@ exports.getCheckout=(req,res,next)=>{
 
 exports.getOrders=(req,res,next)=>
 {
-    res.render('shop/orders',{
-        pageTitle:'Order',
-        path:'/orders'
-    });
+    req.user.getOrders({include: ['products']})  // get.user.cart 로는 접근이 안됨. 
+    .then(order =>{
+        res.render('shop/orders', {
+            path:'/orders',
+            pageTitle:'my Order',
+            orders: order
+        });
+    })
+    .catch(err=>console.log(err));
 }
 
+
+exports.postCreateOrder=(req,res,next)=>
+{
+    let fetchedCart;
+    // cartitem을 item을 order로 옮겨야함
+    req.user.getCart()
+    .then(cart=>{
+        fetchedCart=cart;
+        return cart.getProducts();
+    })
+    .then(products=>{
+        req.user.createOrder() // order만들어주기 
+        .then(order=>{
+            order.addProducts(products.map(product=>{ // 만든 order에 Product 추가 
+                product.orderItem = { quantity: product.cartItem.quantity}; // product.orderItem에 추가 
+                return product;
+            }));
+        })
+        .catch(err=>console.log(err)); 
+        
+    })
+    .then(result=>{
+        return fetchedCart.setProducts(null); // carat에 있는 item 모두 drop 
+    })
+    .then(result=>{
+        res.redirect('/orders');
+    })
+    .catch(err=>console.log(err));
+}
 exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅 
     const prodId=req.body.productId;
     req.user.getCart()
