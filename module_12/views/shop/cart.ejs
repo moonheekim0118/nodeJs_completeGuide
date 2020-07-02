@@ -1,0 +1,35 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (product.length > 0) { %>
+                <div class="centered">
+                    <ul>
+                        <% product.forEach(p=> { %>
+                            <li>
+                                <p><%=p.title%> (<%=p.cartItem.quantity%>)  [ price $ <%=p.price%> ]</p>
+                                <form action="/cart-edit-item" method="POST">
+                                    <input type="number" name="qty" value="<%=p.cartItem.quantity%>" id="qty">
+                                    <input type="hidden" value="<%= p.id %>" name="productId" >
+                                    <button class="btn" type="submit">EDIT</button>
+                                </form><!--수량 수정-->
+                                <form action="/cart-delete-item" method="POST">
+                                    <input type="hidden" value="<%= p.id %>" name="productId" >
+                                    <button class="btn" type="submit">DELETE</button>
+                                </form> <!--삭제-->
+                            </li>
+                        <%  }) %>
+                    </ul>
+            </div>
+                <div class="centered">
+                    <form action="/create-order" method="POST">
+                        <button class="btn" type="submit">Order Now!</button>
+                    </form>
+                </div>
+            <% } else {%>
+                <h1>there's nothing in cart yet!</h1>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>
