@@ -20,9 +20,9 @@ app.use((req,res,next)=>{
     User.findById("5f01694e0857cd31cd69f86a") // amdin user의 id 
     .then(user=>{
         req.user=user; // req.user에 저장 
+        next();
     })
     .catch(err=>console.log(err));
-    next();
 });
 
 app.use('/admin',adminRoute);

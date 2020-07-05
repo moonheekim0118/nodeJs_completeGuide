@@ -1,18 +1,19 @@
 const getDb = require('../util/database').getDb;
 const mongodb = require('mongodb');
 class Product{
-    constructor(title, price, description, imageUrl,id){
+    constructor(title, price, description, imageUrl,id , userId){
         this.title=title;
         this.price=price;
         this.description=description;
         this.imageUrl=imageUrl;
-        this._id=id;
+        this._id= id ? new mongodb.ObjectId(id) : null;
+        this.userId=userId;
     }
     save(){
         const db = getDb();
-        let dpOp;
+        let dpOp="";
         if(this._id){ // _id가 set되어있다면 edit 모드 
-            dpOp=db.collection('products').updateOne({_id: new mongodb.ObjectId(this._id)},{$set: this});
+            dpOp=db.collection('products').updateOne({_id:this._id},{$set: this});
         }
         else{ // 아니면 그냥 insert
             dpOp=db.collection('products') .insertOne(this);
@@ -41,23 +42,10 @@ class Product{
         });
     }
 
-    static editProduct(ProductId, updatedInfo){
-        const db= getDb();
-        return db.collection('products')
-        .update({_id:new mongodb.ObjectId(ProductId)}, { $set: updatedInfo})
-        .then(updatedProducts=>{
-            console.log(updatedProducts);
-            return updatedProducts;
-        })
-        .catch(err=>{
-            console.log(err);
-        });
-    }
-
     static removeProduct(ProductId){
         const db = getDb();
         return db.collection('products')
-        .remove({_id:new mongodb.ObjectId(ProductId)})
+        .deleteOne({_id:new mongodb.ObjectId(ProductId)})
         .then(result=>{
          console.log(result);   
         })

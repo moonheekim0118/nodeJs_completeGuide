@@ -17,7 +17,7 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product = new Product(title,price,description,imageUrl);
+    const product = new Product(title,price,description,imageUrl,null,req.user._id);
     product.save().then(result => {
         console.log(result);
         res.redirect('/');
@@ -54,7 +54,7 @@ exports.postEditProduct=(req,res,next)=>{
     const price=req.body.price;
     const description=req.body.description;
 
-    const product = new Product(title,price,description,imageUrl, new mongodb.ObjectId(id))
+    const product = new Product(title,price,description,imageUrl, id)
     .save()
     .then(result=>{
         console.log(result);
