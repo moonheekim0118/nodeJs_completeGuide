@@ -16,12 +16,8 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    req.user.createProduct({
-        title: title,
-        price: price,
-        imageUrl : imageUrl,
-        description : description // 저절로 user id 저장 
-    }).then(result => {
+    const product = new Product(title,price,description,imageUrl);
+    product.save().then(result => {
         console.log(result);
         res.redirect('/');
     })
@@ -29,6 +25,7 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
 };
 
 // /admin/edit-product 
+/*
 exports.getEditProducts=(req,res,next)=>{
     const editMode= req.query.edit;
     if(!editMode){
@@ -51,7 +48,8 @@ exports.getEditProducts=(req,res,next)=>{
     })
     .catch(err=>{console.log(err)});
 };
-
+*/
+/*
 exports.postEditProduct=(req,res,next)=>{
     const id = req.body.productId;
     const title=req.body.title;
@@ -70,8 +68,8 @@ exports.postEditProduct=(req,res,next)=>{
         res.redirect('/');
     })
     .catch(err => console.log(err));
-}
-
+}*/
+/*
 // /admin/products
 exports.getProducts=(req,res,next)=>{
     req.user.getProducts()  // req.user와 associated된 products만 가져오기 
@@ -83,10 +81,10 @@ exports.getProducts=(req,res,next)=>{
         });
     })
     .catch(err => console.log(err));
-};
+};*/
 
 // 삭제 메서드 
-exports.postDeleteProduct=(req,res,next)=>{
+/*exports.postDeleteProduct=(req,res,next)=>{
     // hidden 으로 id 를 받아온다.
     // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
     const id = req.body.productId;
@@ -98,4 +96,4 @@ exports.postDeleteProduct=(req,res,next)=>{
     .catch(err=>{
         console.log.err;
     });
-}
+}*/
