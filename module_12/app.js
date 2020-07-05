@@ -3,7 +3,7 @@ const app =express();
 const path= require('path');
 
 const adminRoute = require('./routes/admin.js');
-//const shopRoute = require('./routes/shop.js');
+const shopRoute = require('./routes/shop.js');
 //const errorsController = require('./controllers/errors');
 const bodyParser = require('body-parser');
 
@@ -20,7 +20,7 @@ app.use((req,res,next)=>{ // sequelize 에서 생성한 user를 req에 등록
 });
 
 app.use('/admin',adminRoute);
-//app.use(shopRoute);
+app.use(shopRoute);
 //app.use(errorsController.get404page);
 
 mongoConnect( () => {

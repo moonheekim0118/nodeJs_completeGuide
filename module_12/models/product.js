@@ -20,6 +20,18 @@ class Product{
         // 아직 table이 없으면 바로 create해준다.
         
     }
+    static fetchAll(){
+        // find()자체는 promise가 아니라 cursor를 반환하므로 toArray를 해주어야한디
+        const db = getDb();
+        return db.collection('products')
+        .find()
+        .toArray()
+        .then(products=>{
+            console.log(products);
+            return products;
+        })
+        .catch(err=> {console.log(err)});
+    }
 }
 
 module.exports = Product;
