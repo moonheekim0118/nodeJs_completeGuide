@@ -8,6 +8,7 @@ const shopRoute = require('./routes/shop.js');
 const bodyParser = require('body-parser');
 
 const mongoConnect = require('./util/database').mongoConnect;
+const User = require('./models/user');
 
 app.set('view engine', 'ejs');
 app.set('views','views');
@@ -15,7 +16,12 @@ app.set('views','views');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')));
 
-app.use((req,res,next)=>{ // sequelize 에서 생성한 user를 req에 등록 
+app.use((req,res,next)=>{
+    User.findById("5f01694e0857cd31cd69f86a") // amdin user의 id 
+    .then(user=>{
+        req.user=user; // req.user에 저장 
+    })
+    .catch(err=>console.log(err));
     next();
 });
 
@@ -23,7 +29,6 @@ app.use('/admin',adminRoute);
 app.use(shopRoute);
 //app.use(errorsController.get404page);
 
-mongoConnect( () => {
-    console.log();
+mongoConnect(() => {
     app.listen(3000);
 });
