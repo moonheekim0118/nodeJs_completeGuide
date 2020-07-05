@@ -1,5 +1,6 @@
 // product 기준 controller 
 const Product = require('../models/product');
+const mongodb = require('mongodb');
 
 // /admin/add-product == > GET
 exports.getAddProduct=(req,res,next)=>{ //상품 추가 
@@ -24,55 +25,47 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     .catch(err => console.log(err));
 };
 
-// /admin/edit-product 
-/*
+
 exports.getEditProducts=(req,res,next)=>{
     const editMode= req.query.edit;
     if(!editMode){
         return res.redirect('/');
-    }
-    const prodId=req.params.productId;
-    // 현재 req.user와 associated된 Product만 가져오기
-    // 그 Product중에서도 id가 prodId와 같은 것 가져오기 
-    req.user.getProducts({where:{id:prodId}})
-   // Product.findByPk(prodId)
-    .then(products=>{
-        const product= products[0]; 
-        if(!products) return res.redirect('/');
+    };
+    const prodId= req.params.productId;
+    Product.findById(prodId)
+    .then(product=>{
         res.render('admin/edit-product', {
             pageTitle:'Edit product',
-            path:'/admin/edit-product',
+            path: '/admin/edit-product',
             editing:editMode,
             product:product
-        });    
+        });
     })
-    .catch(err=>{console.log(err)});
+    .catch(err=>console.log(err));
+    // 현재 req.user와 associated된 Product만 가져오기
+    // 그 Product중에서도 id가 prodId와 같은 것 가져오기 
 };
-*/
-/*
+
+
 exports.postEditProduct=(req,res,next)=>{
     const id = req.body.productId;
     const title=req.body.title;
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    let changeValue ={
-        title:title,
-        price:price,
-        imageUrl:imageUrl,
-        description:description
-    };
-    Product.update(changeValue, {where: {id : id}} )
-    .then(result => {
+
+    const product = new Product(title,price,description,imageUrl, new mongodb.ObjectId(id))
+    .save()
+    .then(result=>{
         console.log(result);
-        res.redirect('/');
+        res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
-}*/
-/*
+    .catch(err=>console.log(err));
+}
+
 // /admin/products
 exports.getProducts=(req,res,next)=>{
-    req.user.getProducts()  // req.user와 associated된 products만 가져오기 
+    Product.fetchAll() // req.user와 associated된 products만 가져오기 
     .then(products =>{
         res.render('admin/products',{ 
             pageTitle:'Admin products',
@@ -81,14 +74,14 @@ exports.getProducts=(req,res,next)=>{
         });
     })
     .catch(err => console.log(err));
-};*/
+};
 
 // 삭제 메서드 
-/*exports.postDeleteProduct=(req,res,next)=>{
+exports.postDeleteProduct=(req,res,next)=>{
     // hidden 으로 id 를 받아온다.
     // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
     const id = req.body.productId;
-    Product.destroy({where:{id:id}})
+    Product.removeProduct(id)
     .then( result => {
         console.log(result);
         res.redirect('/admin/products');
@@ -96,4 +89,4 @@ exports.getProducts=(req,res,next)=>{
     .catch(err=>{
         console.log.err;
     });
-}*/
+}

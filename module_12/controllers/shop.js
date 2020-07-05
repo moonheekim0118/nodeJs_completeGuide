@@ -26,16 +26,7 @@ exports.getProducts=(req,res,next)=>{
 
 exports.getProduct=(req,res,next)=>{
     const prodId = req.params.productId;
-    /*Product.findAll({where: {id : prodId}})
-    .then(products => {
-        res.render('shop/product-detail', {
-            product: products[0],
-            path:'/products',
-            pageTitle:products[0].title
-        });
-    })
-    .catch(err => console.log(err));*/
-    Product.findByPk(prodId)
+    Product.findById(prodId)
     .then( (products)=>{
         res.render('shop/product-detail', {
             product: products,

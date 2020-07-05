@@ -7,6 +7,7 @@
    <%- include('../includes/navigation.ejs') %>
 
     <main>
+        <% console.log(product)%>
         <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
@@ -25,7 +26,7 @@
                 <textarea name="description" id="description" rows="5"><% if (editing) { %><%= product.description %><% } %></textarea>
             </div>
             <% if (editing) {%>
-                <input type="hidden" value="<%= product.id %>" name="productId"> <!--edit 모드에서 id값 전달하기 위해서!-->
+                <input type="hidden" value="<%= product._id %>" name="productId"> <!--edit 모드에서 id값 전달하기 위해서!-->
             <% } %>
             <button class="btn" type="submit"><% if(editing) { %> Update Product <% } else { %>Add Product <% } %></button>
         </form>
