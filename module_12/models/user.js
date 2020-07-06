@@ -25,13 +25,17 @@ class User{
     }
 
     addToCart(product){
+        /*
         const cartProduct = this.cart.items.findIndex(cp=> {
             return cp._id === product._id;
-        }); // 이미 cart에 넣으려는 item에 cart에 존재하는지 확인 
+        }); // 이미 cart에 넣으려는 item에 cart에 존재하는지 확인 */
 
-        const updatedCart = {items:[{...product, quantity: 1}]}; // cart update 
+        const updatedCart = {items:[{productId: new mongodb.ObjectId(product._id), quantity: 1}]}; // cart update 
+        // cart에 들어갈 내용은 productid refernce만! 왜냐하면 product 자체를 넣어버리면
+        // 용량이 너무 크기도 하고 나중에 product 내용이 변경되면 여기에 있는 product까지 다 변경해야해서 너무 과부하..
+        // 다라서 id값만 넣고, cart내용 보여줄 때엔 해당 id값으로 fectch 하면 된다.
         const db = getDb();
-        db.collection('users').updateOne({_id:this._id},{$set :{cart: updatedCart}});
+        return db.collection('users').updateOne({_id:this._id},{$set :{cart: updatedCart}});
         // 해당 user를 찾아서, cart만 updatedcart로 updated 해준다. 
     }
 

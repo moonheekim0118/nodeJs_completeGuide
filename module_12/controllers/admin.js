@@ -17,7 +17,7 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product = new Product(title,price,description,imageUrl,null,req.user._id);
+    const product = new Product(title,price,description,imageUrl,null,req.user._id); // 상품 add할때 userid삽입 
     product.save().then(result => {
         console.log(result);
         res.redirect('/');
