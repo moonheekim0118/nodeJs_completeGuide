@@ -7,7 +7,7 @@ route.get('/',shopController.getIndex);
 
 route.get('/products',shopController.getProducts);
 
-// route.get('/cart',shopController.getCart);
+route.get('/cart',shopController.getCart);
 
 route.post('/cart',shopController.postCart);
 

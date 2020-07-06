@@ -79,26 +79,23 @@ exports.postCart=(req,res,next)=>{
     // })
     // .catch(err=>console.log(err));
 }
-/*
+
 exports.getCart=(req,res,next)=>{ 
+    // 현재 req.user의 cart 내부에 있는 product들의 id들을 가져온다.
+    // 해당 id에 맞는 product 정보를 가져온다
+
     req.user.getCart()  // get.user.cart 로는 접근이 안됨. 
-    .then(cart =>{
-        // cart와 product가 associated되어있으므로 getProducts 가능 
-        return cart.getProducts()
-        .then(products=>{
-            res.render('shop/cart', {
-                path:'/cart',
-                pageTitle:'my Cart',
-                product: products,
-       //         totalPrice: totalPrice
-            });
-        })
-        .catch(err =>console.log(err));
+    .then(products =>{
+        res.render('shop/cart', {
+            path:'/cart',
+            pageTitle:'my Cart',
+            product: products,
+        });
     })
     .catch(err=>console.log(err));
 
 };
-
+/*
 exports.getCheckout=(req,res,next)=>{
     res.render('shop/checkout',{
         pateTitle:'checkout',
