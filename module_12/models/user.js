@@ -67,7 +67,19 @@ class User{
         return db.collection('users').updateOne({_id:this._id},{$set :{cart: updatedCart}});
         // 해당 user를 찾아서, cart만 updatedcart로 updated 해준다. 
     }
+    
+    deleteFromCart(productId){ // cart에서 특정 아이템 삭제하기.
 
+        const db = getDb();
+        const cartProductIndex = this.cart.items.findIndex(cp=> {
+            return cp.productId.toString()==productId;
+        });
+        const updatedCartItems=[...this.cart.items];
+        updatedCartItems.splice(cartProductIndex,1); // 삭제해주고 다시..update해주기 
+
+        return db.collection('users').updateOne({_id:this._id},{$set:{cart: {itmes: updatedCartItems}}});
+
+    }
     static findById(userId){
         const db = getDb();
         return db.collection('users').findOne({_id: new mongodb.ObjectId(userId)})

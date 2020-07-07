@@ -49,42 +49,13 @@ exports.postCart=(req,res,next)=>{
         res.redirect('/');
     })
     .catch(err=>console.log(err));
-    // req.user.getCart()
-    // .then(cart=>{
-    //     fetchedCart=cart;
-    //     return cart.getProducts({where: {id: prodId}}); // 해당 id의 Product 찾기 
-    // })
-    // .then(products =>{
-    //     let product;
-    //     if(products.length > 0){ // product가 있다면 맨 첫번째 value를 꺼내오기 
-    //         product=  products[0];
-    //     }
-    //     if(product){ // 이미 해당 product가 cart에 존재한다면
-    //         // 이전의 quanity를 가져와서 변경해주기 
-    //         const oldQuantity = product.cartItem.quantity;
-    //         newQuantity=oldQuantity+1;
-    //         //return fetchedCart.addProduct(product, {through: {quanity : newQuantity}});
-    //     }
-    //     return Product.findByPk(prodId) // 추가하려는 item을 가져오기 
-    //     /*.then(product=>{
-    //         return fetchedCart.addProduct(product,{ through: { quanity: newQuantity}}); //Cart에 해당 item add 해주기 
-    //     })
-    //     .catch(err=>console.log(err));*/
-    // })
-    // .then((product)=>{
-    //     return fetchedCart.addProduct(product, {through: {quantity : newQuantity}});
-    // })
-    // .then(()=>{
-    //     res.redirect('/cart');
-    // })
-    // .catch(err=>console.log(err));
 }
 
 exports.getCart=(req,res,next)=>{ 
     // 현재 req.user의 cart 내부에 있는 product들의 id들을 가져온다.
     // 해당 id에 맞는 product 정보를 가져온다
 
-    req.user.getCart()  // get.user.cart 로는 접근이 안됨. 
+    req.user.getCart()
     .then(products =>{
         res.render('shop/cart', {
             path:'/cart',
@@ -95,6 +66,17 @@ exports.getCart=(req,res,next)=>{
     .catch(err=>console.log(err));
 
 };
+
+exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅 
+    const prodId=req.body.productId;
+    req.user.deleteFromCart(prodId)
+    .then(result=>{
+        console.log(result);
+        res.redirect('/cart');
+    }
+    )
+    .catch(err=>console.log(err));
+}
 /*
 exports.getCheckout=(req,res,next)=>{
     res.render('shop/checkout',{
@@ -145,21 +127,7 @@ exports.postCreateOrder=(req,res,next)=>
     })
     .catch(err=>console.log(err));
 }
-exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅 
-    const prodId=req.body.productId;
-    req.user.getCart()
-    .then( cart =>{
-        return cart.getProducts({where: {id: prodId}});
-    })
-    .then(products=>{
-        let product = products[0];
-        return product.cartItem.destroy();
-    })
-    .then(result=>{
-        res.redirect('/cart');
-    })
-    .catch(err => console.log(err));
-}
+
 
 
 exports.postEditCart=(req,res,next)=> // 수량수정 라우팅 
