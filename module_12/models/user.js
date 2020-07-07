@@ -90,5 +90,31 @@ class User{
         })
         .catch(err=>console.log(err));
     }
+
+    addOrder() { // order로 가져가기 
+        const db = getDb();
+        return this.getCart() // cart에서 proudct 받아오기 
+        .then(products=> {
+            const order ={
+                items: products, // order item에 prduct 추가 
+                user:{
+                    _id: new mongodb.ObjectId(this._id), // 어떤 user인지 나타내기 위해 userdata 추가 
+                    name: this.name,
+                }
+            };
+            return db.collection('orders').insertOne(order) // order collection에 넣기 
+        })
+        .then(result=>{
+            this.cart.items=[]; // cart에서 비우기 
+            return db.collection('users').updateOne({_id:this._id},{$set:{cart:{items: []}}}); // db에서 지우기 
+
+        })
+        .catch(err=>console.log(err));
+    }
+
+    getOrder(){
+        const db = getDb();
+        return db.collection('orders');
+    }
 }
 module.exports=User;

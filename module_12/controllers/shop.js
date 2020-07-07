@@ -77,17 +77,9 @@ exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅
     )
     .catch(err=>console.log(err));
 }
-/*
-exports.getCheckout=(req,res,next)=>{
-    res.render('shop/checkout',{
-        pateTitle:'checkout',
-        path:'/checkout'
-    });
-}
-
 exports.getOrders=(req,res,next)=>
 {
-    req.user.getOrders({include: ['products']})  // get.user.cart 로는 접근이 안됨. 
+    req.user.getOrder()  // get.user.cart 로는 접근이 안됨. 
     .then(order =>{
         res.render('shop/orders', {
             path:'/orders',
@@ -98,36 +90,22 @@ exports.getOrders=(req,res,next)=>
     .catch(err=>console.log(err));
 }
 
-
 exports.postCreateOrder=(req,res,next)=>
 {
-    let fetchedCart;
-    // cartitem을 item을 order로 옮겨야함
-    req.user.getCart()
-    .then(cart=>{
-        fetchedCart=cart;
-        return cart.getProducts();
-    })
-    .then(products=>{
-        req.user.createOrder() // order만들어주기 
-        .then(order=>{
-            order.addProducts(products.map(product=>{ // 만든 order에 Product 추가 
-                product.orderItem = { quantity: product.cartItem.quantity}; // product.orderItem에 추가 
-                return product;
-            }));
-        })
-        .catch(err=>console.log(err)); 
-        
-    })
-    .then(result=>{
-        return fetchedCart.setProducts(null); // carat에 있는 item 모두 drop 
-    })
+    req.user.addOrder()
     .then(result=>{
         res.redirect('/orders');
     })
     .catch(err=>console.log(err));
 }
 
+/*
+exports.getCheckout=(req,res,next)=>{
+    res.render('shop/checkout',{
+        pateTitle:'checkout',
+        path:'/checkout'
+    });
+}
 
 
 exports.postEditCart=(req,res,next)=> // 수량수정 라우팅 

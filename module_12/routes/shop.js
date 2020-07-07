@@ -15,12 +15,12 @@ route.post('/cart',shopController.postCart);
 
 // route.get('/checkout',shopController.getCheckout);
 
-// route.get('/orders', shopController.getOrders);
+route.get('/orders', shopController.getOrders);
 
 route.post('/cart-delete-item', shopController.postDeleteCart);
 
 //route.post('/cart-edit-item', shopController.postEditCart);
 
-// route.post('/create-order', shopController.postCreateOrder);
+route.post('/create-order', shopController.postCreateOrder);
 
 module.exports=route;
