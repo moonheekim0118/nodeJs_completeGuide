@@ -24,6 +24,20 @@ class User{
         .catch(err=>console.log(err));
     }
 
+    renewCart(products){ // cart에 있는 item이 admin에서 delete되면, getCart에서는 안띄워지지만 데이터베이스에는 남아있음.
+                        //이를 방지하기 위해서 database내에 있는 지워진 products까지 지워준다.
+        const db = getDb();
+        const updatedCartItems=[];
+        var p;
+        for(p of products){
+            const qtity= this.cart.items.find(i=>{ // 찾은 product 이용하기 , 현재 cart에서 찾기 
+                return i.productId.toString() === p._id.toString(); // 특정 product와 cart내 product가 id가 일치한다면 
+        }).quantity; 
+            updatedCartItems.push({productId: new mongodb.ObjectId(p._id), quantity: qtity});
+        }
+        db.collection('users').updateOne({_id:this._id},{$set :{cart: {items: updatedCartItems }}});
+    }
+
     getCart(){
         // cart에 있는 item들 반환하기
         const db = getDb();
@@ -33,16 +47,20 @@ class User{
         // 왜 product 컬렉션에서 가져오냐면, product의 상세정보를 가져오기 위해!
         return db.collection('products').find({_id: {$in: productIds}}).toArray() // product컬렉션에서 해당 id가진 것 모두 반환 -> 커서타입에서 array로
         .then(products=>{ // cart에 들어간 products 찾음 
+           if(Object.keys(products).length < Object.keys(this.cart.items).length){ // 객체형식이라서 길이 이렇게 구해준다!!
+            // 만약 두 길이가 다르면, 특히 product가 더 적으면 admin에서 product가 delete되었다는 것이므로!
+            // 꼭 renew해주도록 한다.
+            this.renewCart(products);
+           }
             return products.map(p=>{ // 해당 product의 quantity 역시 반환해줘야함 
                 return {...p, // product 전부 
                     quantity: this.cart.items.find(i=>{ // 찾은 product 이용하기 , 현재 cart에서 찾기 
-                    return i.productId.toString() === p._id.toString(); // 특정 product와 cart내 product가 id가 일치한다면 
-                }).quantity //해당 요소의 quantity 반환 
+                        return i.productId.toString() === p._id.toString(); // 특정 product와 cart내 product가 id가 일치한다면 
+                }).quantity 
              };
             });
         })
         .catch(err=>console.log(err));
-        
     }
     addToCart(product){
         
@@ -114,7 +132,8 @@ class User{
 
     getOrder(){
         const db = getDb();
-        return db.collection('orders');
+        //현재 user 에 해당하는 orders 찾아서 array로 변환하여 내보내기 
+        return db.collection('orders').find({'user._id':new mongodb.ObjectId(this._id)}).toArray();
     }
 }
 module.exports=User;
