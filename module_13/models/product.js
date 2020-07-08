@@ -17,6 +17,11 @@ const productSchema = new Schema({
     imageUrl:{
         type:String,
         required:true
+    },
+    userId:{
+        type: Schema.Types.ObjectId,
+        ref:'User', // 어떤 model과 relation을 맺을 것인지!
+        required:true
     }
 });
 

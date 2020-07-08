@@ -17,11 +17,18 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product = new Product({title: title, price:price, description:description, imageUrl:imageUrl }); // 상품 add할때 userid삽입 
+    const product =
+     new Product
+     (
+         {title: title,
+         price:price, 
+         description:description, 
+         imageUrl:imageUrl ,
+         userId:req.user}); // 상품 add할때 userid삽입 
     product.save() // mongoose는 promise를 반환하지 않지만 then method를 지원함
     .then(result => {
         console.log(result);
-        res.redirect('/dfsf');
+        res.redirect('/');
     })
     .catch(err => console.log(err));
 };
@@ -72,7 +79,10 @@ exports.postEditProduct=(req,res,next)=>{
 // /admin/products
 exports.getProducts=(req,res,next)=>{
     Product.find() // req.user와 associated된 products만 가져오기 
+    /*.select('title price -_id') // 특정 데이터만 뽑아오고 싶을 때 
+    .populate('userId', 'name') // userId만가져오는게 아니라, 해당 userId에 해당하는 user의 정보 모두 가져옴 */
     .then(products =>{
+        console.log(products);
         res.render('admin/products',{ 
             pageTitle:'Admin products',
             prods:products,
