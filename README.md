@@ -21,3 +21,32 @@
 |module10|mySQL-Sequelize를 통해 Model을 데이터베이스로 구현|product, user, cart, order 모델 스키마를 생성하고 Sequelzie 기능을 이용하여 해당 스키마 생성 및 추가 기능을 구현한다.|
 |module12|NoSql(MongoDB)를 이용해 Model을 데이터베이스로 구현|몽고db를 이용해 모델을 구현하고, 모델에 대해 수행될 메서드들을 직접 구현해본다|
 |module13|Mongoose를 이용해 Model을 데이터베이스로 구현|module12의 내용을 Mongoose로 바꾸어 여러 메서드들을 Mogoose 제공 메서드로 바꾸어 어플리케이션을 구현한다.|
+
+
+
+
+## 웹 어플리케이션의 구조 
+
++ index (path:'/') 사용자에게 등록된 상품을 보여준다 (수정 필요) 
+  - add To Cart 버튼 : 해당 상품을 cart에 넣을 수 있다. (path: '/addToCart' method="POST")
+  
++ products (path:'/products') 사용자에게 등록된 상품을 보여준다. 
+  - add To Cart 버튼: 해당 상품을 cart에 넣을 수 있다. (path: '/addToCart' method="POST")
+  - detail 버튼 : 선택된 상품의 id를 파라미터값으로 넘겨주어 등록된 상품의 상세를 보여준다. (path: '/products/productId' method="GET") 
+  - back to list 버튼 : /products 페이지로 리다이렉트한다.
++ Cart (path:'/cart') 사용자가 add to cart 버튼을 통해 cart에 등록한 모든 상품을 보여준다
+  - Order Now 버튼: Cart에 등록된 모든 상품을 Order 모델로 옮긴다. ( path: '/create-order' method="POST") 
+  - Delete 버튼 : Cart에 등록된 모든 상품을 삭제한다. (path:'/cart-delete-item' method="POST")
+  
++ Orders (path:'/order') 사용자가 Cart에서 Order Now 를 통해 등록한 모든 상품을 보여준다
+
++ Add Product (path:'/admin/add-product') 사용자가 상품을 데이터베이스에 등록한다
+  - Add Product 버튼 : 사용자가 등록한 정보를 넘겨주어 데이터베이스에 등록한다 (path: 'admin/add-product' method="POST")
+  
++ Admin Product (path:'/admin/products') 현재 로그인된 사용자가 등록한 상품만을 보여준다.
+  - Edit 버튼 : 해당 상품의 id 를 hidden으로 넘겨주어서 'admin/edit-product' method="GET" 페이지로 보내준다.
+  - Delete 버튼: 해당 상품을 데이터베이스에서 삭제한다. (path: 'admin/delete-product' method="POST") 
+  
++ Admin Edit Product (path: '/admin/edit-product')
+  - Edit 버튼 : 변경한 내용을 데이터베이스에 반영해준다 (path: 'admin/edit-product' method="POST")
+  
