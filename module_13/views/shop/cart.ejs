@@ -9,14 +9,14 @@
                     <ul>
                         <% product.forEach(p=> { %>
                             <li>
-                                <p><%=p.title%> (<%=p.quantity%>)  [ price $ <%=p.price%> ]</p>
+                                <p><%=p.productId.title%> (<%=p.quantity%>)  [ price $ <%=p.productId.price%> ]</p>
                                 <form action="/cart-edit-item" method="POST">
                                     <input type="number" name="qty" value="<%=p.quantity%>" id="qty">
-                                    <input type="hidden" value="<%= p._id %>" name="productId" >
+                                    <input type="hidden" value="<%= p.productId._id %>" name="productId" >
                                     <button class="btn" type="submit">EDIT</button>
                                 </form><!--수량 수정-->
                                 <form action="/cart-delete-item" method="POST">
-                                    <input type="hidden" value="<%= p._id %>" name="productId" >
+                                    <input type="hidden" value="<%= p.productId._id %>" name="productId" >
                                     <button class="btn" type="submit">DELETE</button>
                                 </form> <!--삭제-->
                             </li>

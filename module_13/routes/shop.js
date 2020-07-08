@@ -10,16 +10,17 @@ route.get('/products',shopController.getProducts);
 
 route.post('/cart',shopController.postCart);
 
-/*
-
 route.get('/cart',shopController.getCart);
+
+route.post('/cart-delete-item', shopController.postDeleteCart);
+
+/*
 
 
 // route.get('/checkout',shopController.getCheckout);
 
 route.get('/orders', shopController.getOrders);
 
-route.post('/cart-delete-item', shopController.postDeleteCart);
 
 //route.post('/cart-edit-item', shopController.postEditCart);
 
