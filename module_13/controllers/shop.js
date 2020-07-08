@@ -1,5 +1,6 @@
 const Product = require('../models/product');
-
+const User = require('../models/user');
+const Order = require('../models/order');
 exports.getIndex=(req,res,next)=>{
     Product.find() // elements 반환 
     .then(products => {
@@ -84,7 +85,7 @@ exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅
 }
 exports.getOrders=(req,res,next)=>
 {
-    req.user.getOrder()  // get.user.cart 로는 접근이 안됨. 
+    Order.find({'user.userid':req.user._id})
     .then(order =>{
         res.render('shop/orders', {
             path:'/orders',
@@ -97,28 +98,27 @@ exports.getOrders=(req,res,next)=>
 
 exports.postCreateOrder=(req,res,next)=>
 {
-    req.user.addOrder()
+    req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user=>{
+        const products = user.cart.items.map(i=>{
+            // i.productId에 meta data가 있으므로 ... ~ ._doc을 해준다.
+            return {quantity: i.quantity, product:{...i.productId._doc}}
+        });
+        const order = new Order({
+            user:{
+                userid:req.user._id,
+                name:req.user.name
+            },
+            products:products
+        });
+        return order.save();
+    }).then(result=>{
+        return req.user.clearCart();
+    })
     .then(result=>{
         res.redirect('/orders');
     })
-    .catch(err=>console.log(err));
+    .catch(err=>console.log(err))
 }
-
-/*
-exports.getCheckout=(req,res,next)=>{
-    res.render('shop/checkout',{
-        pateTitle:'checkout',
-        path:'/checkout'
-    });
-}
-
-
-exports.postEditCart=(req,res,next)=> // 수량수정 라우팅 
-{
-    const productId=req.body.productId;
-    const qty = req.body.qty; //수정될 수량 파라미터 
-    Product.findById(productId, product=>{
-        Cart.editProduct(productId,product.price,qty);
-        res.redirect('/cart');
-    });
-}*/

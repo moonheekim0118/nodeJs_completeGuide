@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Product = require('../models/product');
+const Order = require('../models/order');
 const userSchema = new Schema({
     name: {
         type:String,
@@ -52,6 +53,11 @@ userSchema.methods.addToCart=function(product){
         items: updatedCartItems  
     };
     this.cart = updatedCart;
+    return this.save();
+}
+
+userSchema.methods.clearCart=function(){
+    this.cart={};
     return this.save();
 }
 
