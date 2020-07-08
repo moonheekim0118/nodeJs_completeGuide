@@ -1,4 +1,4 @@
-# nodeJs 공부 저장소 
+# nodeJs 공부 저장소 👩🏻‍💻 📚
 [udemy nodeJs CompleteGuide](https://www.udemy.com/course/nodejs-the-complete-guide/) 강의 예제 코드 및 과제 저장소 입니다.
 + framework: Node js express.js 
 + template Engine: ejs
@@ -25,7 +25,7 @@
 
 
 
-## 웹 어플리케이션의 구조 
+## 웹 어플리케이션의 구조 ✨
 
 + index (path:'/') 사용자에게 등록된 상품을 보여준다 (수정 필요) 
   - add To Cart 버튼 : 해당 상품을 cart에 넣을 수 있다. (path: '/addToCart' method="POST")
