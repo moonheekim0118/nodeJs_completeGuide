@@ -19,6 +19,8 @@ const errorsController = require('./controllers/errors');
 const bodyParser = require('body-parser');
 
 const User = require('./models/user');
+app.use(session({secret:'my secret', resave:false, saveUninitialized:false, store:store}));
+
 
 app.set('view engine', 'ejs');
 app.set('views','views');
@@ -26,15 +28,6 @@ app.set('views','views');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')));
 
-
-app.use((req,res,next)=>{
-    User.findById("5f0519efbe41f10860a1bac0") // amdin user의 id 
-    .then(user=>{
-        req.user=user;
-        next();
-    })
-    .catch(err=>console.log(err));
-});
 
 app.use('/admin',adminRoute);
 app.use(shopRoute);

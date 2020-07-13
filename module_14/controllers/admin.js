@@ -25,7 +25,7 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
          price:price, 
          description:description, 
          imageUrl:imageUrl ,
-         userId:req.user}); // 상품 add할때 userid삽입 
+         userId:req.session.user}); // 상품 add할때 userid삽입 
     product.save() // mongoose는 promise를 반환하지 않지만 then method를 지원함
     .then(result => {
         console.log(result);
@@ -48,7 +48,7 @@ exports.getEditProducts=(req,res,next)=>{
             path: '/admin/edit-product',
             editing:editMode,
             product:product,
-            isAuthenticated: req.isLoggedIn
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err=>console.log(err));
@@ -89,7 +89,7 @@ exports.getProducts=(req,res,next)=>{
             pageTitle:'Admin products',
             prods:products,
             path:'/admin/products',
-            isAuthenticated: req.isLoggedIn
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));
