@@ -60,7 +60,7 @@ exports.getCart=(req,res,next)=>{
     // 현재 req.user의 cart 내부에 있는 product들의 id들을 가져온다.
     // 해당 id에 맞는 product 정보를 가져온다
 
-    req.session.user.populate('cart.items.productId') // user의 cart.items에 있는 것들을 productId기준으로 해당 product 의 정보까지 끌어오기
+    req.user.populate('cart.items.productId') // user의 cart.items에 있는 것들을 productId기준으로 해당 product 의 정보까지 끌어오기
     //해당 product정보는 productId 아래에 생성된다. 
     .execPopulate() // populate가 promise형으로 안주므로..
     .then(user=>{ // 여기서 반환되는것은 user의 전체정보 
@@ -80,7 +80,7 @@ exports.getCart=(req,res,next)=>{
 
 exports.postDeleteCart=(req,res,next)=>{ // 카트에서 삭제 라우팅 
     const prodId=req.body.productId;
-    req.session.user.deleteFromCart(prodId)
+    req.user.deleteFromCart(prodId)
     .then(result=>{
         console.log(result);
         res.redirect('/');
@@ -103,7 +103,7 @@ exports.getOrders=(req,res,next)=>
 
 exports.postCreateOrder=(req,res,next)=>
 {
-    req.session.user
+    req.user
     .populate('cart.items.productId')
     .execPopulate()
     .then(user=>{
@@ -113,14 +113,14 @@ exports.postCreateOrder=(req,res,next)=>
         });
         const order = new Order({
             user:{
-                userid:req.session.user._id,
-                name:req.session.user.name
+                userid:req.user._id,
+                name:req.user.name
             },
             products:products
         });
         return order.save();
     }).then(result=>{
-        return req.session.user.clearCart();
+        return req.user.clearCart();
     })
     .then(result=>{
         res.redirect('/orders');

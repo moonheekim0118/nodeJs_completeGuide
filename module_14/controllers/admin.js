@@ -8,7 +8,7 @@ exports.getAddProduct=(req,res,next)=>{ //상품 추가
         pageTitle:'Add Product',
         path:'/admin/add-prdouct' ,
         editing:false,
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
     });
 };
 
@@ -25,7 +25,7 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
          price:price, 
          description:description, 
          imageUrl:imageUrl ,
-         userId:req.session.user}); // 상품 add할때 userid삽입 
+         userId:req.user}); // 상품 add할때 userid삽입 
     product.save() // mongoose는 promise를 반환하지 않지만 then method를 지원함
     .then(result => {
         console.log(result);
