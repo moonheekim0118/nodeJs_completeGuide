@@ -46,19 +46,5 @@ app.use(errorsController.get404page);
 
 mongoose.connect(MONGODB_URI)
 .then(result=>{
-    User.findOne(). // args안넘기면 첫번째 데이터 반환 
-    then(user=>{
-        if(!user){
-            const user = new User({
-                name:'Admin',
-                email:'admin@amdin',
-                cart:{
-                    items:[]
-                }
-            });
-            user.save();
-        }
-    })
-    .catch(err=>console.log(err));
     app.listen(3000);
 }).catch(err=>console.log(err));
