@@ -19,10 +19,18 @@ const errorsController = require('./controllers/errors');
 const bodyParser = require('body-parser');
 
 const User = require('./models/user');
+app.set('view engine', 'ejs');
+app.set('views','views');
+
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(express.static(path.join(__dirname,'public')));
 app.use(session({secret:'my secret', resave:false, saveUninitialized:false, store:store})); // session db에 등록 
 
 app.use((req,res,next)=>{
-    if(req.session.user){ // login 되어있을 경우 
+    if(!req.session.user){
+        return next();
+    }
+    else{ // login 되어있을 경우 
     User.findById(req.session.user._id) // req.session에 저장된 user는 mongoDB 모델 자체가 아니라 data이므로
     // 몽구스 메서드 사용못함! 따라서 해당 id로 User 데이터베이스를 찾아서 req.user에 넣어주도록 한다.
     .then(user=>{
@@ -30,14 +38,7 @@ app.use((req,res,next)=>{
         next();
     }).catch(err=>console.log(err));
 }
-next();
 })
-app.set('view engine', 'ejs');
-app.set('views','views');
-
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(express.static(path.join(__dirname,'public')));
-
 
 app.use('/admin',adminRoute);
 app.use(shopRoute);
