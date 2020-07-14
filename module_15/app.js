@@ -5,12 +5,13 @@ const mongoose =require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const MONGODB_URI='mongodb+srv://moonhee:asdf6405@cluster0.9j2jo.mongodb.net/shop';
-
+const csrf = require('csurf');
 const store = new MongoDBStore({
     uri:MONGODB_URI,
     collection:'sessions'
 });
 
+const csrfProtection = csrf();
 
 const adminRoute = require('./routes/admin.js');
 const shopRoute = require('./routes/shop.js');
@@ -26,6 +27,9 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static(path.join(__dirname,'public')));
 app.use(session({secret:'my secret', resave:false, saveUninitialized:false, store:store})); // session db에 등록 
 
+// after initialize session
+app.use(csrfProtection);
+
 app.use((req,res,next)=>{
     if(!req.session.user){
         return next();
@@ -38,6 +42,11 @@ app.use((req,res,next)=>{
         next();
     }).catch(err=>console.log(err));
 }
+})
+app.use((req,res,next)=>{ /*앞으로 나올 모든 rendering에 아래 데이터 포함시키기*/ 
+    res.locals.isAutenticated = req.session.isLoggedIn; // for checking if it's logged in
+    res.locals.csrfToken= req.csrfToken(); // for protecting our app 
+    next();
 })
 
 app.use('/admin',adminRoute);
