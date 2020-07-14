@@ -113,6 +113,7 @@ exports.postCreateOrder=(req,res,next)=>
         });
         const order = new Order({
             user:{
+                email:req.user.email,
                 userid:req.user._id
             },
             products:products
