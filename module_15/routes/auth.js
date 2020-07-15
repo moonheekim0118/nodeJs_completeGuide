@@ -14,4 +14,7 @@ route.post('/signUp',authController.postSignUp);
 
 route.get('/reset',authController.getReset);
 route.post('/reset',authController.postReset);
+
+route.get('/new-password/:token', authController.getUpdatePassword);
+route.post('/new-password', authController.postUpdatePassword);
 module.exports=route;

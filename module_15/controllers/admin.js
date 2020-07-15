@@ -62,25 +62,25 @@ exports.postEditProduct=(req,res,next)=>{
     const price=req.body.price;
     const description=req.body.description;
    Product.findById(id).then(product=>{
+       if(product.userId.toString()!==req.user._id.toString()){ // 현재 user가 등록한 상품이 아니면 수정 못하도록 함 
+           return res.redirect('/'); 
+       }
        product.title=title;
        product.price=price;
        product.description=description;
        product.imageUrl=imageUrl;
-       product.save();
+       product.save().then(result=>{
+        console.log('UPDATED PRODUCT!');
+        res.redirect('/admin/products');
+    } )
    })
-   .then(result=>{
-       console.log('UPDATED PRODUCT!');
-       res.redirect('/admin/products');
-   } )
    .catch(err=>console.log(err))
 
 }
 
 // /admin/products
 exports.getProducts=(req,res,next)=>{
-    Product.find() // req.user와 associated된 products만 가져오기 
-    /*.select('title price -_id') // 특정 데이터만 뽑아오고 싶을 때 
-    .populate('userId', 'name') // userId만가져오는게 아니라, 해당 userId에 해당하는 user의 정보 모두 가져옴 */
+    Product.find({userId:req.user._id}) // 현재 user가 등록한 상품만 보도록 수정 
     .then(products =>{
         console.log(products);
         res.render('admin/products',{ 
@@ -97,7 +97,7 @@ exports.postDeleteProduct=(req,res,next)=>{
     // hidden 으로 id 를 받아온다.
     // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
     const id = req.body.productId;
-    Product.deleteOne({'_id':id})
+    Product.deleteOne({'_id':id , userId: req.user_id})
     .then( result => {
         console.log(result);
         res.redirect('/admin/products');
