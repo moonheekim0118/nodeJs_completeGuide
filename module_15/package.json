@@ -15,6 +15,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^2.3.3",
     "csrf": "^3.1.0",
     "csurf": "^1.11.0",
@@ -24,6 +25,8 @@
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.22",
     "mysql2": "^2.1.0",
+    "nodemailer": "^6.4.10",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "sequelize": "^6.1.0"
   }
 }

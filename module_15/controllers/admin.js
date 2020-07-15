@@ -7,8 +7,7 @@ exports.getAddProduct=(req,res,next)=>{ //상품 추가
     res.render('admin/edit-product', {
         pageTitle:'Add Product',
         path:'/admin/add-prdouct' ,
-        editing:false,
-        isAuthenticated: req.session.isLoggedIn
+        editing:false
     });
 };
 
@@ -47,8 +46,7 @@ exports.getEditProducts=(req,res,next)=>{
             pageTitle:'Edit product',
             path: '/admin/edit-product',
             editing:editMode,
-            product:product,
-            isAuthenticated: req.session.isLoggedIn
+            product:product
         });
     })
     .catch(err=>console.log(err));
@@ -88,8 +86,7 @@ exports.getProducts=(req,res,next)=>{
         res.render('admin/products',{ 
             pageTitle:'Admin products',
             prods:products,
-            path:'/admin/products',
-            isAuthenticated: req.session.isLoggedIn
+            path:'/admin/products'
         });
     })
     .catch(err => console.log(err));

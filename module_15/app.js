@@ -6,6 +6,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const MONGODB_URI='mongodb+srv://moonhee:asdf6405@cluster0.9j2jo.mongodb.net/shop';
 const csrf = require('csurf');
+const flash = require('connect-flash');
 const store = new MongoDBStore({
     uri:MONGODB_URI,
     collection:'sessions'
@@ -29,6 +30,7 @@ app.use(session({secret:'my secret', resave:false, saveUninitialized:false, stor
 
 // after initialize session
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req,res,next)=>{
     if(!req.session.user){
@@ -44,7 +46,7 @@ app.use((req,res,next)=>{
 }
 })
 app.use((req,res,next)=>{ /*앞으로 나올 모든 rendering에 아래 데이터 포함시키기*/ 
-    res.locals.isAutenticated = req.session.isLoggedIn; // for checking if it's logged in
+    res.locals.isAuthenticated = req.session.isLoggedIn; // for checking if it's logged in
     res.locals.csrfToken= req.csrfToken(); // for protecting our app 
     next();
 })

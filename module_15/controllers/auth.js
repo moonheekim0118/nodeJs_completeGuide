@@ -1,13 +1,20 @@
 const User= require('../models/user');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth:{
+        api_key:'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'
+    }
+}));
 exports.getLogin=(req,res,next)=>
 {
     console.log(req.session);
     res.render('auth/login', {
         path:'/login',
         pageTitle:'login',
-        isAuthenticated: req.session.isLoggedIn
+        ErrorMessage: req.flash('err')
     });
 }
 
@@ -16,10 +23,13 @@ exports.postLogin = (req, res, next) => {
     const password=req.body.password;
     User.findOne({email:email})
     .then(user=>{
-        if(!user) return res.redirect('/login');
+        if(!user) {
+            req.flash('err', 'invalid email');
+            return res.redirect('/login');}
         bcrypt.compare(password, user.password)
         .then(doMatch=>{
             if(!doMatch){
+                req.flash('err', 'invalid password');
                 res.redirect('/login');
             }
             else{
@@ -51,7 +61,8 @@ exports.getSignUp=(req,res,next)=>{
     res.render('auth/signup',
     { path:'/signup',
     pageTitle:'signup',
-    isAuthenticated: req.session.isLoggedIn1});
+    ErrorMessage: req.flash('err')
+    });
 }
 
 exports.postSignUp=(req,res,next)=>{
@@ -61,7 +72,9 @@ exports.postSignUp=(req,res,next)=>{
     User.findOne({email:email})
     .then(userDoc=>{
         if(userDoc) 
-        { return res.redirect('/signup'); }
+        { 
+            req.flash('err', 'email already taken!');
+            return res.redirect('/signup'); }
         else{
         return bcrypt.hash(password,12)
         .then(hashedPassword=>{
@@ -74,7 +87,14 @@ exports.postSignUp=(req,res,next)=>{
         })
         .then(result=>{
             res.redirect('/login');
-        })}
+            return transporter.sendMail({
+                to: email,
+                from: 'moonhee118118@gmail.com',
+                subject:'Welcome to our shop!',
+                html: '<h1>you successfully signed up!</h1>'
+            });
+        }).catch(err=>console.log(err));
+    }
     })
     .catch(err=>console.log(err));
 }
