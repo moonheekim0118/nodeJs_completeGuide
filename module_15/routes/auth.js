@@ -18,7 +18,7 @@ route.post('/login',
             };
         });
     })
-    .normalizeEmail()
+    .normalizeEmail() 
     ,
     body('password')
     .isLength({min:6, max:12}).withMessage('Password length should be 6~12')

@@ -2,8 +2,7 @@
 const Product = require('../models/product');
 const mongodb = require('mongodb');
 const {validationResult} = require('express-validator/check');
-
-
+const mongoose = require('mongoose')
 // /admin/add-product == > GET
 exports.getAddProduct=(req,res,next)=>{ //상품 추가 
     res.render('admin/edit-product', {
@@ -38,7 +37,8 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     }
     const product =new Product
      (
-         {title: title,
+         {
+        title: title,
          price:price, 
          description:description, 
          imageUrl:imageUrl ,
@@ -48,7 +48,11 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
         console.log(result);
         res.redirect('/');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        const error = new Error(err);
+         error.httpStatusCode = 500;
+        return next(error);
+    });
 };
 
 
@@ -70,7 +74,11 @@ exports.getEditProducts=(req,res,next)=>{
             validationError:[],
         });
     })
-    .catch(err=>console.log(err));
+    .catch(err => {
+        const error = new Error(err);
+         error.httpStatusCode = 500;
+        return next(error);
+    });
     // 현재 req.user와 associated된 Product만 가져오기
     // 그 Product중에서도 id가 prodId와 같은 것 가져오기 
 };
@@ -108,7 +116,11 @@ exports.postEditProduct=(req,res,next)=>{
         res.redirect('/admin/products');
     } )
    })
-   .catch(err=>console.log(err))
+   .catch(err => {
+    const error = new Error(err);
+     error.httpStatusCode = 500;
+    return next(error);
+});
 
 }
 
@@ -123,7 +135,11 @@ exports.getProducts=(req,res,next)=>{
             path:'/admin/products'
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        const error = new Error(err);
+         error.httpStatusCode = 500;
+        return next(error);
+    });
 };
 
 // 삭제 메서드 
@@ -136,7 +152,9 @@ exports.postDeleteProduct=(req,res,next)=>{
         console.log(result);
         res.redirect('/admin/products');
     })
-    .catch(err=>{
-        console.log.err;
+    .catch(err => {
+        const error = new Error(err);
+         error.httpStatusCode = 500;
+        return next(error);
     });
 }
