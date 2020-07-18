@@ -1,13 +1,19 @@
 // product 기준 controller 
 const Product = require('../models/product');
 const mongodb = require('mongodb');
+const {validationResult} = require('express-validator/check');
+
 
 // /admin/add-product == > GET
 exports.getAddProduct=(req,res,next)=>{ //상품 추가 
     res.render('admin/edit-product', {
         pageTitle:'Add Product',
         path:'/admin/add-prdouct' ,
-        editing:false
+        editing:false,
+        product:{title:'', imageUrl:'', price:'', description:''},
+        ErrorMessage: '',
+        validationError : [],
+        validating:true
     });
 };
 
@@ -17,8 +23,20 @@ exports.postAddProduct=(req,res,next)=>{ //상품 추가후 list
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
-    const product =
-     new Product
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+        return res.status(422).render('admin/edit-product',
+        { path:'/add-product',
+        pageTitle:'add product',
+        ErrorMessage: errors.array()[0].msg,
+        validationError : errors.array(),
+        product:{title:title, imageUrl:imageUrl, price:price, description:description},
+        editing:'',
+        validating:true
+        });
+    }
+    const product =new Product
      (
          {title: title,
          price:price, 
@@ -46,7 +64,10 @@ exports.getEditProducts=(req,res,next)=>{
             pageTitle:'Edit product',
             path: '/admin/edit-product',
             editing:editMode,
-            product:product
+            product:product,
+            validating:false,
+            ErrorMessage: '',
+            validationError:[],
         });
     })
     .catch(err=>console.log(err));
@@ -61,6 +82,19 @@ exports.postEditProduct=(req,res,next)=>{
     const imageUrl=req.body.imageUrl;
     const price=req.body.price;
     const description=req.body.description;
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        console.log(errors.array());
+        return res.status(422).render('admin/edit-product',
+        { path:'/edit-product',
+        pageTitle:'edit product',
+        ErrorMessage: errors.array()[0].msg,
+        validationError : errors.array(),
+        product:{title:title, imageUrl:imageUrl, price:price, description:description, _id:id},
+        editing:true,
+        validating:true
+        });
+    }
    Product.findById(id).then(product=>{
        if(product.userId.toString()!==req.user._id.toString()){ // 현재 user가 등록한 상품이 아니면 수정 못하도록 함 
            return res.redirect('/'); 
@@ -97,7 +131,7 @@ exports.postDeleteProduct=(req,res,next)=>{
     // hidden 으로 id 를 받아온다.
     // product에서 해당 id를 이용해서 데이터에서 정보를 찾은 후 삭제한다.
     const id = req.body.productId;
-    Product.deleteOne({'_id':id , userId: req.user_id})
+    Product.deleteOne({'_id':id , 'userId': req.user._id})
     .then( result => {
         console.log(result);
         res.redirect('/admin/products');

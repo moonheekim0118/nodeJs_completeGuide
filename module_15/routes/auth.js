@@ -18,10 +18,12 @@ route.post('/login',
             };
         });
     })
+    .normalizeEmail()
     ,
     body('password')
     .isLength({min:6, max:12}).withMessage('Password length should be 6~12')
     .isAlphanumeric().withMessage('only numbers and characters are allowed')
+    .trim()
 ]
 ,authController.postLogin);
 
@@ -41,10 +43,12 @@ route.post('/signUp',
         };
     });
 })
+.normalizeEmail()
 ,
 body('password')
 .isLength({min:6, max:12}).withMessage('Password length should be 6~12')
 .isAlphanumeric().withMessage('only numbers and characters are allowed')
+.trim()
 ,
 body('confirmPassword').custom((value, {req})=>{
     if (value!==req.body.password){
@@ -52,7 +56,9 @@ body('confirmPassword').custom((value, {req})=>{
     }
     return true;
 }
-)]
+)
+.trim()
+]
 ,authController.postSignUp);
 
 
