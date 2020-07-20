@@ -1,5 +1,6 @@
 const Product = require('../Models/product');
 const { validationResult } = require('express-validator/check');
+const fileHelper = require('../util/fileHelper');
 exports.getProducts=(req,res,next)=>{
     //admin으로부터 등록된 products만 보여준다.
     Product.find({userId:req.user._id})
@@ -126,6 +127,7 @@ exports.postEditProduct=(req,res,next)=>{
     .then(product=>{
         product.title=title;
         if(image){ // image를 새로 업로드 했을 경우에만 image path를 바꾼다.
+            fileHelper.fileDelete(product.imageUrl); // 이전 파일 삭제 
             product.imageUrl = image.path;
         }
         product.description=description;
@@ -142,7 +144,14 @@ exports.postEditProduct=(req,res,next)=>{
 
 exports.postDeleteProduct=(req,res,next)=>{
     const id= req.body.prodId; // 삭제할 product의 id
-    Product.deleteOne({_id:id, userId:req.user._id})
+    Product.findOne({_id:id, userId:req.user._id})
+    .then(product=>{
+        if(!product){
+            return next(new Error('Product not found'));
+        }
+        fileHelper.fileDelete(product.imageUrl); // 이전 파일 삭제 
+        return  Product.deleteOne({_id:id});
+    })
     .then(result=>{
         res.redirect('/admin/products');
     }).catch(err=>{

@@ -25,6 +25,7 @@
                     <% }); %>
                 </ul>
                 <p id="total_price"> total Price is  $<%=totalPrice %></p>
+                <a class="btn danger" href="/orders/<%=orders[0].productId.userId%>">INVOCE</a>
             <% } %>
         </main>
         <%- include('../includes/end.ejs') %>

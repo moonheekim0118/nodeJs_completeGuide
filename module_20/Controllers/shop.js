@@ -1,6 +1,8 @@
 const Product = require('../Models/product');
 const Order = require('../Models/order');
 const product = require('../Models/product');
+const fs = require('fs');
+const path = require('path');
 exports.getIndex=(req,res,next)=>{
     Product.find()
     .then(products=>{
@@ -111,8 +113,7 @@ exports.getOrder=(req,res,next)=>{ // Order페이지 띄우기
     // order가 없는 경우에도 renewOrder를 실행하면 null 에러가 뜬다.
     // 따라서 order가 있는 경우와 없는 경우를 나누어주었다. 
     // 추후 refectoring 필요 
-    if(req.user){
-        Order.findOne({'user.userId':req.user._id})
+    Order.findOne({'user.userId':req.user._id})
         .then(order=>{
             if(order){
                 order.renewOrder()
@@ -144,10 +145,6 @@ exports.getOrder=(req,res,next)=>{ // Order페이지 띄우기
             error.httpStatusCode = 500;
             return next(error);
         });
-    }
-    else{
-        res.redirect('/login'); // 로그인 안되어있다면
-    }
 }
 
 exports.postAddToOrder=(req,res,next)=>{ // Cart에서 Order로 추가 
@@ -186,4 +183,30 @@ exports.postDeleteOrder=(req,res,next)=>{
         error.httpStatusCode = 500;
         return next(error);
     });
+}
+
+exports.getInvoice=(req,res,next)=>
+{
+    const invoiceId = req.params.invoiceId;
+    if(invoiceId !== req.user._id.toString()){ // 다른 유저가 user Id로 접근하는 것 방지!
+        //현재 로그인된 유저 Id와 같은지 확인 
+       return  next(new Error('UnAuthorized'));
+    }
+    console.log(invoiceId);
+    const fileName = 'invoice-'+invoiceId+'.pdf';
+    const invoicePath = path.join('invoice', fileName);
+    // fs.readFile(invoicePath, (err, data)=>{
+    //     if(err){
+    //       console.log(err);
+    //       return next(err);
+    //     }
+    //     res.setHeader('Content-Type','application/pdf');
+    //     res.setHeader('Content-Disposition', 'inline; filename="'+ fileName+ '"');
+    //     // inline을 attachment로 바꾸면 다운로드 가능 
+    //     res.send(data);
+    // });
+    const file = fs.createReadStream(invoicePath);
+    res.setHeader('Content-Type','application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="'+ fileName+ '"');
+    file.pipe(res);
 }
