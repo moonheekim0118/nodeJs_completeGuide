@@ -1,18 +1,35 @@
 const Product = require('../Models/product');
 const Order = require('../Models/order');
-const product = require('../Models/product');
 const fs = require('fs');
 const path = require('path');
+const ITEMS_PER_PAGE = 1;
 exports.getIndex=(req,res,next)=>{
-    Product.find()
+    let page=1;
+    if(!req.query.page){  page  = 1; }
+    else{ page= +req.query.page; }
+    let totalItems; 
+    
+    Product.find().countDocuments()
+    .then(num=>{
+        totalItems = num;
+        return Product.find()
+        .skip((page-1)*ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+    })
     .then(products=>{
         res.render('shop/index',{
-            pageTitle:'welcome',
+            pageTitle: 'welcome! ',
             path:'/',
-            prods: products
-        });
+            prods: products,
+            currentPage:page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+            hasPreviousPage: page > 2 ,
+            nextPage : page+1,
+            previousPage:page-1,
+            lastPage: Math.ceil(totalItems/ ITEMS_PER_PAGE)
+        })
     })
-    .catch(err =>console.log(err));
+    .catch(err=>console.log(err));
 }
 
 exports.getProductDetail=(req,res,next)=>{
@@ -31,19 +48,32 @@ exports.getProductDetail=(req,res,next)=>{
 }
 
 exports.getProducts=(req,res,next)=>{
-    Product.find()
+    let page=1;
+    if(!req.query.page){  page  = 1; }
+    else{ page= +req.query.page; }
+    let totalItems; 
+    
+    Product.find().countDocuments()
+    .then(num=>{
+        totalItems = num;
+        return Product.find()
+        .skip((page-1)*ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+    })
     .then(products=>{
         res.render('shop/product-list',{
-            pageTitle:'products',
-            path:'/products',
-            prods: products
-        });
+            pageTitle: 'product list ',
+            path:'product list',
+            prods: products,
+            currentPage:page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+            hasPreviousPage: page > 2 ,
+            nextPage : page+1,
+            previousPage:page-1,
+            lastPage: Math.ceil(totalItems/ ITEMS_PER_PAGE)
+        })
     })
-    .catch(err=>{
-        const error = new Error(err);
-        error.httpStatusCode = 500;
-        return next(error);
-    });
+    .catch(err=>console.log(err));
 }
 
 exports.getCart=(req,res,next)=>{
