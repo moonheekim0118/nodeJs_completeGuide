@@ -1,0 +1,44 @@
+<!--admin 에서 product 추가하는 부분 -->
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <main>
+        <% if(ErrorMessage.length> 0) {%>
+            <div class="user-message user-message--err"><%=ErrorMessage%></div>
+            <% } %>
+        <form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
+            <div class="form-control">
+                <label for="title">Title</label>
+                <input type="text" 
+                class = "<%= validationError.find(e=> e.param === 'title') ? 'invalid' : ''%>" 
+                name="title" id="title" value="<% if (editing || isError) { %><%=product.title%><% } %>">
+            </div>
+            <div class="form-control">
+                <label for="image">Image</label>
+                <input type="file"
+                 name="image" id="image" >
+            </div>
+            <div class="form-control">
+                <label for="price">Price</label>
+                <input type="number" 
+                class = "<%= validationError.find(e=> e.param === 'price') ? 'invalid' : ''%>" 
+                name="price" id="price" step="0.01" value="<% if (editing || isError) { %><%=product.price%><% } %>"> 
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea name="description"
+                class = "<%= validationError.find(e=> e.param === 'description') ? 'invalid' : ''%>" 
+                 id="description" rows="5"><% if (editing || isError) { %><%= product.description %><% } %></textarea>
+            </div>
+            <% if (editing) {%>
+                <input type="hidden" value="<%= product._id %>" name="productId"> <!--edit 모드에서 id값 전달하기 위해서!-->
+            <% } %>
+            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+            <button class="btn" type="submit"><% if(editing) { %> Update Product <% } else { %>Add Product <% } %></button>
+        </form>
+    </main>
+
+<%- include('../includes/end.ejs') %>

@@ -1,0 +1,40 @@
+<!--admin 에서 product 추가하는 부분 -->
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <main>
+        <% if(ErrorMessage.length> 0) {%>
+        <div class="user-message user-message--err"><%=ErrorMessage%></div>
+        <% } %>
+        <form class="product-form" action="/login" method="POST">
+            <div class="form-control">
+                <label for="email">email</label>
+                <input type="text"
+                class = "<%= validationError.find(e=> e.param === 'email') ? 'invalid' : ''%>" 
+                name="email" id="email" value="<%=oldInput.email%>">
+            </div>
+            <div class="form-control">
+                <label for="password">password</label>
+                <input type="password"
+                class = "<%= validationError.find(e=> e.param === 'password') ? 'invalid' : ''%>" 
+                 name="password" id="password" value="<%=oldInput.password%>"> 
+            </div>
+            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+            <button class="btn" type="submit">continue</button>
+        </form>
+        <form class="product-form" action="/signUp" method="GET">
+            <p >Are you new to Amadoo?</p>
+            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+            <button class="btn" type="submit">sign up now</button>
+        </form>
+        <form class="product-form" action="/new-password" method="GET">
+            <p >did you forget your password?</p>
+            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+            <button class="btn" type="submit">forgot my password!</button>
+        </form>
+    </main>
+
+<%- include('../includes/end.ejs') %>

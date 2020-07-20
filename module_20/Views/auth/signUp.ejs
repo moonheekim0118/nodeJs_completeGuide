@@ -1,0 +1,40 @@
+<!--admin 에서 product 추가하는 부분 -->
+<%- include('../includes/head.ejs') %>
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <main>
+        <% if(ErrorMessage.length> 0) {%>
+            <div class="user-message user-message--err"><%=ErrorMessage%></div>
+            <% } %>
+        <form class="product-form" action="/signUp" method="POST">
+            <div class="form-control">
+                <label for="email">email</label>
+                <input type="text" 
+                class = "<%= validationError.find(e=> e.param === 'email') ? 'invalid' : ''%>" 
+                name="email" id="email"
+                value="<%=oldInput.email %>"
+                >
+            </div>
+            <div class="form-control">
+                <label for="password">password</label>
+                <input type="password" 
+                class = "<%= validationError.find(e=> e.param === 'password') ? 'invalid' : ''%>" 
+                name="password" id="password"
+                value="<%= oldInput.password%>"
+                > 
+            </div>
+            <div class="form-control">
+                <label for="Confirm Password">Confirm Password</label>
+                <input type="password" 
+                class = "<%= validationError.find(e=> e.param === 'confirmPassword') ? 'invalid' : ''%>" 
+                name="confirmPassword" id="confirmPassword">
+            </div>
+            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+            <button class="btn" type="submit">signUp</button>
+        </form>
+    </main>
+
+<%- include('../includes/end.ejs') %>

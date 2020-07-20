@@ -1,0 +1,30 @@
+<%- include('../includes/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <link rel="stylesheet" href="/css/orders.css">
+        <main>
+            <% if (orders.length <= 0) { %>
+                <h1>Nothing there!</h1>
+            <% } else { %>
+                <ul class="orderList">
+                    <% let totalPrice=0 %>
+                    <% orders.forEach(order => { %>
+                        <div class="order">
+                             <p class="order_title"><%= order.productId.title %></p>
+                             <p class="order_quantity">quantity is <%= order.quantity %></p>
+                             <p class="order_price">$ <%= (order.productId.price*order.quantity)%></p>
+                             <% totalPrice+=(order.productId.price*order.quantity) %>
+                        </div>
+                        <form action="/order-delete-item" method="POST">
+                            <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
+                            <input type="hidden" value="<%= order.productId.id %>" name="productId">
+                            <button class="btn danger" type="submit">Delete</button>
+                        </form>
+                    <% }); %>
+                </ul>
+                <p id="total_price"> total Price is  $<%=totalPrice %></p>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>

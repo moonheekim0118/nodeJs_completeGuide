@@ -1,0 +1,42 @@
+.orderList{
+    width: 10rem;
+    max-width: 90%;
+    display: block;
+}
+
+.order{
+    display: inline-block;
+    border: 1px solid rgb(71, 206, 129);
+    background-color: whitesmoke;
+    width:400px;
+    height:180px;
+    margin-bottom: 5px;
+}
+
+.order_title{
+    padding-left: 10px;
+    font-size: 30px;
+    font-style: bold;
+    color: seagreen;
+    margin-right: 10px;
+    border-bottom: 1px solid tomato;
+}
+
+.order_quantity{
+    margin:0;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.order_price{
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+#total_price{
+    font-size: 30px;
+    margin-left:50px;
+    color: teal;
+}
