@@ -1,6 +1,7 @@
 <!--admin 에서 product 리스트 보는 부분 -->
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/product.css">
+
 </head>
 <body>
     <%- include('../includes/navigation.ejs') %>
@@ -27,11 +28,9 @@
                         </div>
                         <div class="card__actions">
                             <a href="/admin/edit-product/<%= prod.id%>?edit=true" class="btn">Edit</a>
-                            <form action="/admin/delete-product" method="POST">
                                 <input  type="hidden"  name="_csrf"  value="<%= csrfToken%>"  >
                                 <input type="hidden" value="<%= prod.id %>" name="prodId">
-                                <button class="btn" type="submit">Delete</button>
-                            </form>
+                                <button class="btn" type="button" onclick="deleteProduct(this)">Delete</button>
                         </div>
                     </article>
                 <% } %>
@@ -40,5 +39,5 @@
             <h1>THERE IS NO PRODUCTS YET</h1>
         <% } %>
     </main>
-
 <%- include('../includes/end.ejs') %>
+<script src="/js/admin.js"></script>
