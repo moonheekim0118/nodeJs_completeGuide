@@ -21,32 +21,14 @@
 |module10|mySQL-Sequelize를 통해 Model을 데이터베이스로 구현|product, user, cart, order 모델 스키마를 생성하고 Sequelzie 기능을 이용하여 해당 스키마 생성 및 추가 기능을 구현한다.|
 |module12|NoSql(MongoDB)를 이용해 Model을 데이터베이스로 구현|몽고db를 이용해 모델을 구현하고, 모델에 대해 수행될 메서드들을 직접 구현해본다|
 |module13|Mongoose를 이용해 Model을 데이터베이스로 구현|module12의 내용을 Mongoose로 바꾸어 여러 메서드들을 Mogoose 제공 메서드로 바꾸어 어플리케이션을 구현한다.|
+|module14|Session과 Cookie를 구현| Session을 데이이터베이스에 연동하고 해당 Session에 로그인한 회원정보를 삽입한다.|
+|module15|Authentication을 구현| 모든 post리퀘스트에 CSRF 토큰을 삽입, 비밀번호 생성및 비교 시 bcrypt 사용|
+|module16|구글API를 사용하여 email을 보냄 | 원래 수업에서는 SendGrid사용했으나, 나는 구글  gmail API를 사용함|
+|module17|비밀번호 재설정 구현 및 Authorization 추가| 비밀번호 재설정시 난수 토큰을 파라미터로 갖는 path를 이메일로 보내서 비밀번호를 재설정 하게 함, 로그인 하지 않은 유저가 admin 페이지에 접근하지 못하도록 구현|
+|module18|express validator를 이용하여 로그인,회원가입, 상품 추가에 validation 구현| 기존 validatior 메서드와 custom validator를 구현하여 input값을 검사|
+|module19|500error 페이지를 구현하여 error handling | 데이터베이스 상 문제나 permission 에러 발생 시 stuck 되지 않고 500 error페이지를 띄우게 함|
+|module20|File upload 기능을 구현 | Multer패키지를 이용하여 상품 등록 시 이미지 url 대신 이미지 파일을 업로드 하도록 함. 데이터베이스에는 해당 이미지파일의 path를 저장하여 정적으로 접근가능하도록 함|
+|module21|Pagination 기능 구현 | mongoose의 기본 메서드 skip, limit을 이용하여 데이터가 여러 페이지에 분산 될 수 있도록 구현함|
+|module22|products 삭제 시 Async requests 구현| 기존에 삭제시에는 삭제된 정보를 업데이트 하기 위해 리다이렉션 했으나 이를 개선하여 delete메서드를 이용해 json파일을 res로 보냄| 
 
 
-
-
-## 웹 어플리케이션의 구조 ✨
-
-+ index (path:'/') 사용자에게 등록된 상품을 보여준다 (수정 필요) 
-  - add To Cart 버튼 : 해당 상품을 cart에 넣을 수 있다. (path: '/addToCart' method="POST")
-  
-+ products (path:'/products') 사용자에게 등록된 상품을 보여준다. 
-  - add To Cart 버튼: 해당 상품을 cart에 넣을 수 있다. (path: '/addToCart' method="POST")
-  - detail 버튼 : 선택된 상품의 id를 파라미터값으로 넘겨주어 등록된 상품의 상세를 보여준다. (path: '/products/productId' method="GET") 
-  - back to list 버튼 : /products 페이지로 리다이렉트한다.
-+ Cart (path:'/cart') 사용자가 add to cart 버튼을 통해 cart에 등록한 모든 상품을 보여준다
-  - Order Now 버튼: Cart에 등록된 모든 상품을 Order 모델로 옮긴다. ( path: '/create-order' method="POST") 
-  - Delete 버튼 : Cart에 등록된 모든 상품을 삭제한다. (path:'/cart-delete-item' method="POST")
-  
-+ Orders (path:'/order') 사용자가 Cart에서 Order Now 를 통해 등록한 모든 상품을 보여준다
-
-+ Add Product (path:'/admin/add-product') 사용자가 상품을 데이터베이스에 등록한다
-  - Add Product 버튼 : 사용자가 등록한 정보를 넘겨주어 데이터베이스에 등록한다 (path: 'admin/add-product' method="POST")
-  
-+ Admin Product (path:'/admin/products') 현재 로그인된 사용자가 등록한 상품만을 보여준다.
-  - Edit 버튼 : 해당 상품의 id 를 hidden으로 넘겨주어서 'admin/edit-product' method="GET" 페이지로 보내준다.
-  - Delete 버튼: 해당 상품을 데이터베이스에서 삭제한다. (path: 'admin/delete-product' method="POST") 
-  
-+ Admin Edit Product (path: '/admin/edit-product')
-  - Edit 버튼 : 변경한 내용을 데이터베이스에 반영해준다 (path: 'admin/edit-product' method="POST")
-  
